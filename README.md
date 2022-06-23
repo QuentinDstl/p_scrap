@@ -1,18 +1,12 @@
-# TODO
-
 ## tuto 
 https://cosmocode.io/how-to-connect-selenium-to-an-existing-browser-that-was-opened-manually/#launch-browser-with-custom-flags
 
-## ce qui a été fait
-ajouter chrome.exe dans les %PATH%
-lancer chrome avec des options
-pip install selenium, pandas, xlwt
+## what have been done to launch project
+add chrome.exe in %PATH% of windows environment variable
+pip install all the requirements in requirements.txt
 chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScraperProfile"
     - For --remote-debugging-port value you can specify any port that is open.
     - For --user-data-dir flag you need to pass a directory where a new Chrome profile will be created
-  
-il faut définir le chromedriver.exe
-
 
 ## TODO
 SPEED :
@@ -24,16 +18,16 @@ https://www.loginradius.com/blog/engineering/speed-up-python-code/
 
 http://sdz.tdct.org/sdz/creer-une-installation.html
 
-faire une serie de test avec des trucs en moins et voir pour blinder
-attention : si y'a pas de fenetre = freeze
-quand il y'a pas de model
+do all the test to see if everything is secured and safe
+no windows init.py -> freeze
+no template -> ...
 
 # IHM PATH
 
-lancer parcs.exe
-    ouvre une fenetre avec :
-    bouton start -> lance le navigateur
-        une fois que c'est start on a :
-            bouton pour save
-            link pour voir les models
-            link pour ajouter un model
+launch parcs.exe
+    a window open :
+    button start -> launch browser
+        then you can :
+            save the page with a button
+            see templates that exist 
+            add a templates
