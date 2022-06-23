@@ -1,0 +1,52 @@
+{
+    "rules": [
+        {
+            "csvSavedAs": "Linkedin Company About",
+            "differenceInUrl": "/about/",
+            "savedInfos": [
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[1]/section/div/div[2]/div[1]/div[1]/div[2]/div/h1/span",
+                    "saveAs": "Company",
+                    "saveAsType": "string"
+                },
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div[2]/div[2]/div[1]/h3/div/p",
+                    "saveAs": "Address",
+                    "saveAsType": "string"
+                },
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div[2]/div[1]/section/dl/dd[2]",
+                    "saveAs": "Type",
+                    "saveAsType": "string"
+                },
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div[2]/div[1]/section/dl/dd[3]",
+                    "saveAs": "Employees",
+                    "saveAsType": "string"
+                },
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div[2]/div[1]/section/dl/dd[6]",
+                    "saveAs": "Founded",
+                    "saveAsType": "string"
+                },
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div[2]/div[1]/section/dl/dd[5]",
+                    "saveAs": "Location",
+                    "saveAsType": "string"
+                },
+                {
+                    "htmlTag": "xpath",
+                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div[2]/div[1]/section/dl/dd[1]/a/span",
+                    "saveAs": "Website",
+                    "saveAsType": "link"
+                }
+            ]
+        }
+    ]
+}
