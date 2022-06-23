@@ -12,7 +12,6 @@ chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScrape
 SPEED :
 use pypy3
 https://www.loginradius.com/blog/engineering/speed-up-python-code/
-- use tuple instead of list for the data (but tupple is immutable)
 - Use list comprehension
 - Use generators
 
