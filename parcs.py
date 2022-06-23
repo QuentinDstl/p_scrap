@@ -1,5 +1,4 @@
 # Scraping data using Selenium
-from typing import final
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -7,22 +6,23 @@ from selenium.common.exceptions import WebDriverException
 # CSV saver
 from pandas import DataFrame
 # for charging the config
-from json import loads as json_loads
+from json import loads as JsonLoads
 # using cmd and gettting file tree
-import os
+from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
+from os import system as OsSystem, listdir as OsListdir
 
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # Project Root
+ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 
-CONFIG_PATH = os.path.join(ROOT_DIR, 'configuration.conf')
+CONFIG_PATH = OsJoin(ROOT_DIR, 'configuration.conf')
 # templates folder path
-DIR_CONFIG_PATH = os.path.join(ROOT_DIR, r'templates\\')
+DIR_CONFIG_PATH = OsJoin(ROOT_DIR, r'templates\\')
 # directory of the user for the chrome driver
-DIR_CHROMEPROFIL_PATH = os.path.join(ROOT_DIR, r'driver\\driverProfile\\')
+DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, r'driver\\driverProfile\\')
 # folder where data are saved
-DIR_SAVE_DATA_PATH = os.path.join(ROOT_DIR, r'data\\')
+DIR_SAVE_DATA_PATH = OsJoin(ROOT_DIR, r'data\\')
 # path to have access to the chromedriver executable
-DRIVER_PATH = os.path.join(ROOT_DIR, r'driver\\chromedriver.exe')
+DRIVER_PATH = OsJoin(ROOT_DIR, r'driver\\chromedriver.exe')
 
 # TODO faire un installeur pour pouvoir save les variables global suivante dans un fichier
 # directory of the chrome application where chrome.exe is located
@@ -32,9 +32,9 @@ PORT = 9222
 
 
 def initChromeWindow():
-    os.system(
+    OsSystem(
         "cmd /k set PATH=%PATH%;%s" % DIR_CHROMEAPP_PATH)
-    os.system(
+    OsSystem(
         'cmd /k chrome.exe --remote-debugging-port=%d --user-data-dir=%s' % (PORT, DIR_CHROMEPROFIL_PATH))
 
 
@@ -53,9 +53,9 @@ def setDriver():
     return driver
 
 
-def getFiles(path):
-    for file in os.listdir(path):
-        if path.isfile(path.join(path, file)):
+def getFiles(folder_path):
+    for file in OsListdir(folder_path):
+        if OsIsfile(OsJoin(folder_path, file)):
             yield file
 
 
@@ -73,7 +73,7 @@ def isInConfigs(url):
 
 def loadJSON(filename):
     with open(DIR_CONFIG_PATH + filename) as json_file:
-        return json_loads(json_file.read())
+        return JsonLoads(json_file.read())
 
 
 def getConfigFromRule(json, url):
@@ -152,28 +152,36 @@ def getDataframe(driver, config):
 
 def saveDataframe(config, url, dataframe):
     try:
-        path = path.join(
+        folder_path = OsJoin(
             DIR_SAVE_DATA_PATH, config["csvSavedAs"] + "_" + url.split("?")[1] + ".csv")
-        dataframe.to_csv(path, index=False)
+        dataframe.to_csv(folder_path, index=False)
     except IndexError:
-        path = path.join(DIR_SAVE_DATA_PATH, config["csvSavedAs"] + ".csv")
-        dataframe.to_csv(path, index=False)
+        folder_path = OsJoin(DIR_SAVE_DATA_PATH, config["csvSavedAs"] + ".csv")
+        dataframe.to_csv(folder_path, index=False)
     finally:
-        print("Data saved in " + path)
+        print("Data saved in " + folder_path)
 
 
 # TODO faire une state machine pour pas charger le driver à chaque appuis du bouton ni meme la config
 def main():
 
     # initChromeWindow()
+    print("Chrome window opened")
     driver = setDriver()
+    print("Driver loaded")
     try:
         config = loadConfig(driver.current_url)
-    except:
+        print("Config loaded")
+    except Exception as e:
+        print(e)
+        print("Cant load config")
         driver.close()
-        exit()
+        exit(1)
+    print("Starting to get data")
     dataframe = getDataframe(driver, config)
+    print("Data got")
     saveDataframe(config, driver.current_url, dataframe)
+    print("Data saved")
 
 
 if __name__ == '__main__':
