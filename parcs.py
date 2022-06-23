@@ -119,7 +119,7 @@ def getElements(driver, config):
         elements_table.append(driver.find_elements(
             by=getByType(info["htmlTag"]),
             value=info["value"]))
-    return elements_table
+    return tuple(elements_table)
 
 
 def modifyElement(config, elements_table, i, j):
@@ -146,10 +146,11 @@ def elementsToDataframe(config, elements_table):
 
 def getDataframe(driver, config):
     elements = getElements(driver, config)
-    dataframe = elementsToDataframe(config, elements)
-    return dataframe
+    return elementsToDataframe(config, elements)
 
 
+# TODO dont use concatenate with +
+# TODO save depending on name or stuff like that so its easier to find
 def saveDataframe(config, url, dataframe):
     try:
         folder_path = OsJoin(
@@ -166,22 +167,16 @@ def saveDataframe(config, url, dataframe):
 def main():
 
     # initChromeWindow()
-    print("Chrome window opened")
     driver = setDriver()
-    print("Driver loaded")
     try:
         config = loadConfig(driver.current_url)
-        print("Config loaded")
     except Exception as e:
         print(e)
         print("Cant load config")
         driver.close()
         exit(1)
-    print("Starting to get data")
     dataframe = getDataframe(driver, config)
-    print("Data got")
     saveDataframe(config, driver.current_url, dataframe)
-    print("Data saved")
 
 
 if __name__ == '__main__':
