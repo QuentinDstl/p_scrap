@@ -130,6 +130,7 @@ def getElement(config, elements_table, i, j):
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
         print(e)
+        print("Cant load element")
         pass # TODO check if passing good
 
 
