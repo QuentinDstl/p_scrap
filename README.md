@@ -11,8 +11,8 @@ chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScrape
 ## TODO
 SPEED :
 use pypy3
+use numpy for matrix of data and use jit on top of it
 https://www.loginradius.com/blog/engineering/speed-up-python-code/
-- Use list comprehension
 - Use generators
 
 http://sdz.tdct.org/sdz/creer-une-installation.html

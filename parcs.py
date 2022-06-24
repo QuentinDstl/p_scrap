@@ -129,18 +129,18 @@ def modifyElement(config, elements_table, i, j):
 def getElement(config, elements_table, i, j):
     try:
         return modifyElement(config, elements_table, i, j)
-    except IndexError:
-        print("Error while getting element")
+    except IndexError as e:
+        print(e)
         pass
 
 
 def dictOfElements(config, elements_table, j):
-    return {config["savedInfos"][i]["saveAs"]: getElement(config, elements_table, i, j) for i in range(len(config["savedInfos"]))}
+    return {config["savedInfos"][i]["saveAs"]: getElement(config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
 
 
 def elementsToDataframe(config, elements_table):
     return DataFrame().from_records([dictOfElements(config, elements_table, j)
-                                     for j in range(len(elements_table[0]))])
+                                     for j, _ in enumerate(elements_table[0])])
 
 
 def getDataframe(driver, config):
