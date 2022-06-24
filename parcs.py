@@ -125,20 +125,22 @@ def modifyElement(config, elements_table, i, j):
     elif(config["savedInfos"][i]["saveAsType"] == "link"):
         return elements_table[i][j].get_attribute("href")
 
+
+def getElement(config, elements_table, i, j):
+    try:
+        return modifyElement(config, elements_table, i, j)
+    except IndexError:
+        print("Error while getting element")
+        pass
+
+
 def dictOfElements(config, elements_table, j):
-    sub_data = {}
-    for i in range(len(config["savedInfos"])):  # j number of infos columns
-        try:
-            sub_data[config["savedInfos"][i]["saveAs"]] = modifyElement(
-                config, elements_table, i, j)
-        except IndexError:
-            print("Error while getting element")
-            pass
-    return sub_data
+    return {config["savedInfos"][i]["saveAs"]: getElement(config, elements_table, i, j) for i in range(len(config["savedInfos"]))}
 
 
 def elementsToDataframe(config, elements_table):
-    data = [dictOfElements(config, elements_table, j) for j in range(len(elements_table[0]))]
+    data = [dictOfElements(config, elements_table, j)
+            for j in range(len(elements_table[0]))]
     return DataFrame().from_records(data)
 
 
