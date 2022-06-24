@@ -28,12 +28,10 @@ DRIVER_PATH = OsJoin(ROOT_DIR, r'driver\\chromedriver.exe')
 
 
 def initChromeWindow():
-    DIR_CHROMEAPP_PATH = OsGetenv('DIR_CHROMEAPP_PATH')
-    PORT = OsGetenv('PORT')
     OsSystem(
-        "cmd /k set PATH=%PATH%;%s" % DIR_CHROMEAPP_PATH)
+        "cmd /k set PATH=%PATH%;%s" % OsGetenv('DIR_CHROMEAPP_PATH'))
     OsSystem(
-        'cmd /k chrome.exe --remote-debugging-port=%d --user-data-dir=%s' % (PORT, DIR_CHROMEPROFIL_PATH))
+        'cmd /k chrome.exe --remote-debugging-port=%d --user-data-dir=%s' % (OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
 
 
 def setDriver():
