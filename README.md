@@ -22,7 +22,7 @@ no template -> ...
 # IHM PATH
 
 launch parcs.exe
-    a window open :
+    a window open :cd De  
     button start -> launch browser
         then you can :
             save the page with a button

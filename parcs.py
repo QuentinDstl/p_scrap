@@ -8,31 +8,37 @@ from pandas import DataFrame
 # for charging the config
 from json import loads as JsonLoads
 # charge the templates and see templates files
-from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
+from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile, isdir as OsIsdir, normpath as OsNormpath
 from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
-from subprocess import Popen,CREATE_NEW_CONSOLE
+from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
+# GUI
+from pathlib import Path
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 # loading the environment variables
 from dotenv import load_dotenv
-
-#TODO remove
-import time
 
 load_dotenv()
 
 ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 
 # templates folder path
-DIR_CONFIG_PATH = OsJoin(ROOT_DIR, 'templates\\')
+DIR_TEMPLATES_PATH = OsJoin(ROOT_DIR, 'templates\\')
 # directory of the user for the chrome driver
 DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, 'driver\\driverProfile\\')
 # path to have access to the chromedriver executable
 DRIVER_PATH = OsJoin(ROOT_DIR, 'driver\\chromedriver.exe')
+# path to assets folder for the GUI
+ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
+# path to open explorer.exe
+FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 
 
 def initChromeWindow():
-    prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' % (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)    
-    Popen('taskkill /F /PID %i' % prog_start.pid) #this will kill the invoked terminal 
+    prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
+                       (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
+    # this will kill the invoked terminal
+    Popen('taskkill /F /PID %i' % prog_start.pid)
 
 
 def setDriver():
@@ -61,7 +67,7 @@ def getFiles(folder_path):
 # ordered but its more flexible because if the url name is
 # app.something.net it wont be found
 def isInConfigs(url):
-    for filename in getFiles(DIR_CONFIG_PATH):
+    for filename in getFiles(DIR_TEMPLATES_PATH):
         short_filename = filename.split(".")[0]
         if short_filename in url:
             return filename
@@ -69,7 +75,7 @@ def isInConfigs(url):
 
 
 def loadJSON(filename):
-    with open(DIR_CONFIG_PATH + filename) as json_file:
+    with open(DIR_TEMPLATES_PATH + filename) as json_file:
         return JsonLoads(json_file.read())
 
 
@@ -77,7 +83,7 @@ def getConfigFromRule(json, url):
     for rule in json["rules"]:
         if rule["differenceInUrl"] in url:
             return rule
-    raise Exception("No rule found for this url")
+    raise Exception("No rule found for %s" % url.split("/", 3)[2])
 
 
 def loadConfig(url):
@@ -86,7 +92,7 @@ def loadConfig(url):
         json = loadJSON(filename)
         return getConfigFromRule(json, url)
     else:
-        raise Exception("Config not found")
+        raise Exception("Config not found for this %s" % url.split("/", 3)[2])
 
 
 def getByType(html_type):
@@ -151,21 +157,192 @@ def saveDataframe(config, url, dataframe):
     dataframe.to_csv(folder_path, index=False)
     return folder_path
 
+OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
+
+
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+
+
+def getData(driver):
+    try:
+        config = loadConfig(driver.current_url)
+    except Exception as e:
+        print(e)
+    else:
+        dataframe = getDataframe(driver, config)
+        print(saveDataframe(config, driver.current_url, dataframe))
+
+
+def openTemplatesFolder():
+    Subrun([FILEBROWSER_PATH, DIR_TEMPLATES_PATH])
+
+
+def createTkWindow(driver):
+    window = Tk()
+
+    window.geometry("300x200")
+    window.configure(bg="#FFFEFC")
+
+    canvas = Canvas(
+        window,
+        bg="#FFFEFC",
+        height=200,
+        width=300,
+        bd=0,
+        highlightthickness=0,
+        relief="ridge"
+    )
+    canvas.place(x=0, y=0)
+    image_image_1 = PhotoImage(
+        file=relative_to_assets("image_1.png"))
+    image_1 = canvas.create_image(
+        75.0,
+        100.0,
+        image=image_image_1
+    )
+    button_image_1 = PhotoImage(
+        file=relative_to_assets("button_1.png"))
+    button_1 = Button(
+        image=button_image_1,
+        borderwidth=0,
+        highlightthickness=0,
+        command = lambda: print("button_3 clicked"),
+        # command=getData(driver),
+        relief="flat"
+    )
+    button_1.place(
+        x=171.0,
+        y=97.0,
+        width=109.0,
+        height=20.0
+    )
+    button_image_2 = PhotoImage(
+        file=relative_to_assets("button_2.png"))
+    button_2 = Button(
+        image=button_image_2,
+        borderwidth=0,
+        highlightthickness=0,
+        command = lambda: print("button_2 clicked"),
+        # command=openTemplatesFolder(),
+        relief="flat"
+    )
+    button_2.place(
+        x=170.0,
+        y=68.0,
+        width=113.0,
+        height=20.0
+    )
+    button_image_3 = PhotoImage(
+        file=relative_to_assets("button_3.png"))
+    button_3 = Button(
+        image=button_image_3,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: print("button_3 clicked"),
+        relief="flat"
+    )
+    button_3.place(
+        x=170.0,
+        y=20.0,
+        width=110.0,
+        height=40.0
+    )
+    canvas.create_text(
+        14.0,
+        8.0,
+        anchor="nw",
+        text="How to use it ?",
+        fill="#FFFEFC",
+        font=("Lato Bold", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        65.0,
+        anchor="nw",
+        text="Go to a webpage",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        119.0,
+        anchor="nw",
+        text="template exist it",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        137.0,
+        anchor="nw",
+        text="will be save, else",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        155.0,
+        anchor="nw",
+        text="add yourself a new",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        173.0,
+        anchor="nw",
+        text="one",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        29.0,
+        anchor="nw",
+        text="Go to the new",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        47.0,
+        anchor="nw",
+        text="opened browser",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        83.0,
+        anchor="nw",
+        text="and click on save",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_text(
+        14.0,
+        101.0,
+        anchor="nw",
+        text="Data, if a related",
+        fill="#FFFEFC",
+        font=("Lato", 15 * -1)
+    )
+    canvas.create_rectangle(
+        160.0,
+        130.0,
+        290.0,
+        190.0,
+        fill="#D9D9D9",
+        outline="")
+    window.resizable(False, False)
+    window.mainloop()
 
 def main():
     initChromeWindow()
     driver = setDriver()
-    while 1:
-        input("Press Enter to save current page")
-        try:
-            config = loadConfig(driver.current_url)
-        except Exception as e:
-            print(e)
-            print("Cant load config")
-            driver.close()
-            exit(1)
-        dataframe = getDataframe(driver, config)
-        print(saveDataframe(config, driver.current_url, dataframe))
+    window = createTkWindow(driver)
 
 
 if __name__ == '__main__':
