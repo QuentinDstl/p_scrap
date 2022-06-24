@@ -164,7 +164,6 @@ def saveDataframe(config, url, dataframe):
 
 # TODO faire une state machine pour pas charger le driver à chaque appuis du bouton ni meme la config
 def main():
-
     # initChromeWindow()
     driver = setDriver()
     try:
