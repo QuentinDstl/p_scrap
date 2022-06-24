@@ -18,13 +18,11 @@ load_dotenv()
 ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 
 # templates folder path
-DIR_CONFIG_PATH = OsJoin(ROOT_DIR, r'templates\\')
+DIR_CONFIG_PATH = OsJoin(ROOT_DIR, 'templates\\')
 # directory of the user for the chrome driver
-DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, r'driver\\driverProfile\\')
-# folder where data are saved
-SAVE_DATA_PATH = OsJoin(ROOT_DIR, r'data')
+DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, 'driver\\driverProfile\\')
 # path to have access to the chromedriver executable
-DRIVER_PATH = OsJoin(ROOT_DIR, r'driver\\chromedriver.exe')
+DRIVER_PATH = OsJoin(ROOT_DIR, 'driver\\chromedriver.exe')
 
 
 def initChromeWindow():
@@ -146,7 +144,7 @@ def getDataframe(driver, config):
 
 def saveDataframe(config, url, dataframe):
     folder_path = OsJoin(
-        SAVE_DATA_PATH, config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
+        OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
     dataframe.to_csv(folder_path, index=False)
     return folder_path
 

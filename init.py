@@ -17,4 +17,4 @@ DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, r'driver\\driverProfile\\')
 #         'cmd /k chrome.exe --remote-debugging-port=%d --user-data-dir=%s' % (OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
 
 OsSystem(
-    'cmd /k chrome.exe --remote-debugging-port=%d --user-data-dir=%s' % (OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
+    'cmd /k chrome.exe --remote-debugging-port=%s --user-data-dir=%s' % (OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
