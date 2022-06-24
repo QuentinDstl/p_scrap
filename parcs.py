@@ -114,9 +114,8 @@ def getByType(html_type):
 
 
 def getElements(driver, config):
-    elements_table = [driver.find_elements(by=getByType(
-        info["htmlTag"]), value=info["value"]) for info in config["savedInfos"]]
-    return tuple(elements_table)
+    return tuple([driver.find_elements(by=getByType(
+        info["htmlTag"]), value=info["value"]) for info in config["savedInfos"]])
 
 
 def modifyElement(config, elements_table, i, j):
@@ -131,7 +130,7 @@ def getElement(config, elements_table, i, j):
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
         print(e)
-        pass
+        pass # TODO check if passing good
 
 
 def dictOfElements(config, elements_table, j):
