@@ -24,14 +24,13 @@ SAVE_DATA_PATH = OsJoin(ROOT_DIR, r'data')
 # path to have access to the chromedriver executable
 DRIVER_PATH = OsJoin(ROOT_DIR, r'driver\\chromedriver.exe')
 
-# TODO faire un installeur pour pouvoir save les variables global suivante dans un fichier
-# directory of the chrome application where chrome.exe is located
-DIR_CHROMEAPP_PATH = r'C:\\Program Files\\Google\\Chrome\\Application\\'
-# port to use for the chrome debugger
-PORT = 9222
-
 
 def initChromeWindow():
+    # TODO faire un installeur pour pouvoir save les variables global suivante dans un fichier
+    # directory of the chrome application where chrome.exe is located
+    DIR_CHROMEAPP_PATH = r'C:\\Program Files\\Google\\Chrome\\Application\\'
+    # port to use for the chrome debugger
+    PORT = 9222
     OsSystem(
         "cmd /k set PATH=%PATH%;%s" % DIR_CHROMEAPP_PATH)
     OsSystem(
