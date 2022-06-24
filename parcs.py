@@ -27,9 +27,7 @@ DRIVER_PATH = OsJoin(ROOT_DIR, 'driver\\chromedriver.exe')
 
 def initChromeWindow():
     OsSystem(
-        "cmd /k set PATH=%PATH%;%s" % OsGetenv('DIR_CHROMEAPP_PATH'))
-    OsSystem(
-        'cmd /k chrome.exe --remote-debugging-port=%d --user-data-dir=%s' % (OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
+        'cmd /k "set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s"' % (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
 
 
 def setDriver():
@@ -149,19 +147,21 @@ def saveDataframe(config, url, dataframe):
     return folder_path
 
 
-# TODO faire une state machine pour pas charger le driver à chaque appuis du bouton ni meme la config
 def main():
-    # initChromeWindow()
+    initChromeWindow()
     driver = setDriver()
-    try:
-        config = loadConfig(driver.current_url)
-    except Exception as e:
-        print(e)
-        print("Cant load config")
-        driver.close()
-        exit(1)
-    dataframe = getDataframe(driver, config)
-    print(saveDataframe(config, driver.current_url, dataframe))
+
+    while 1:
+        input("Press Enter to save current page")
+        try:
+            config = loadConfig(driver.current_url)
+        except Exception as e:
+            print(e)
+            print("Cant load config")
+            driver.close()
+            exit(1)
+        dataframe = getDataframe(driver, config)
+        print(saveDataframe(config, driver.current_url, dataframe))
 
 
 if __name__ == '__main__':
