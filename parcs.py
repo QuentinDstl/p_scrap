@@ -342,7 +342,7 @@ def createTkWindow(driver):
 def main():
     initChromeWindow()
     driver = setDriver()
-    window = createTkWindow(driver)
+    createTkWindow(driver)
 
 
 if __name__ == '__main__':
