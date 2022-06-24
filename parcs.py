@@ -20,7 +20,7 @@ DIR_CONFIG_PATH = OsJoin(ROOT_DIR, r'templates\\')
 # directory of the user for the chrome driver
 DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, r'driver\\driverProfile\\')
 # folder where data are saved
-DIR_SAVE_DATA_PATH = OsJoin(ROOT_DIR, r'data\\')
+SAVE_DATA_PATH = OsJoin(ROOT_DIR, r'data')
 # path to have access to the chromedriver executable
 DRIVER_PATH = OsJoin(ROOT_DIR, r'driver\\chromedriver.exe')
 
@@ -48,8 +48,7 @@ def setDriver():
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
         print(e)
-        print(
-            "Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
+        print("Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
         exit(1)
     return driver
 
@@ -130,8 +129,8 @@ def getElement(config, elements_table, i, j):
     try:
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
-        print(e +
-              ": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
+        print(e)
+        print(": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
         pass
 
 
@@ -149,18 +148,11 @@ def getDataframe(driver, config):
     return elementsToDataframe(config, elements)
 
 
-# TODO dont use concatenate with +
-# TODO save depending on name or stuff like that so its easier to find
 def saveDataframe(config, url, dataframe):
-    try:
-        folder_path = OsJoin(
-            DIR_SAVE_DATA_PATH, config["csvSavedAs"] + "_" + url.split("?")[1] + ".csv")
-        dataframe.to_csv(folder_path, index=False)
-    except IndexError:
-        folder_path = OsJoin(DIR_SAVE_DATA_PATH, config["csvSavedAs"] + ".csv")
-        dataframe.to_csv(folder_path, index=False)
-    finally:
-        print("Data saved in " + folder_path)
+    folder_path = OsJoin(
+        SAVE_DATA_PATH, config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
+    dataframe.to_csv(folder_path, index=False)
+    return folder_path
 
 
 # TODO faire une state machine pour pas charger le driver à chaque appuis du bouton ni meme la config
@@ -175,7 +167,7 @@ def main():
         driver.close()
         exit(1)
     dataframe = getDataframe(driver, config)
-    saveDataframe(config, driver.current_url, dataframe)
+    print(saveDataframe(config, driver.current_url, dataframe))
 
 
 if __name__ == '__main__':
