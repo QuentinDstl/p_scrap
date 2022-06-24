@@ -7,11 +7,16 @@ from selenium.common.exceptions import WebDriverException
 from pandas import DataFrame
 # for charging the config
 from json import loads as JsonLoads
-# using cmd and gettting file tree
+# charge the templates and see templates files
 from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
-from os import system as OsSystem, listdir as OsListdir, getenv as OsGetenv
+from os import listdir as OsListdir, getenv as OsGetenv
+# execute command in a shell to open a browser
+from subprocess import Popen,CREATE_NEW_CONSOLE
 # loading the environment variables
 from dotenv import load_dotenv
+
+#TODO remove
+import time
 
 load_dotenv()
 
@@ -26,8 +31,8 @@ DRIVER_PATH = OsJoin(ROOT_DIR, 'driver\\chromedriver.exe')
 
 
 def initChromeWindow():
-    OsSystem(
-        'cmd /k "set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s"' % (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH))
+    prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' % (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)    
+    Popen('taskkill /F /PID %i' % prog_start.pid) #this will kill the invoked terminal 
 
 
 def setDriver():
@@ -150,7 +155,7 @@ def saveDataframe(config, url, dataframe):
 def main():
     initChromeWindow()
     driver = setDriver()
-
+    print(driver.current_url)
     while 1:
         input("Press Enter to save current page")
         try:
