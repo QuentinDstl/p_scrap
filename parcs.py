@@ -155,7 +155,6 @@ def saveDataframe(config, url, dataframe):
 def main():
     initChromeWindow()
     driver = setDriver()
-    print(driver.current_url)
     while 1:
         input("Press Enter to save current page")
         try:
