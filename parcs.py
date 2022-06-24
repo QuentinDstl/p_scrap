@@ -114,11 +114,8 @@ def getByType(html_type):
 
 
 def getElements(driver, config):
-    elements_table = []
-    for info in config["savedInfos"]:
-        elements_table.append(driver.find_elements(
-            by=getByType(info["htmlTag"]),
-            value=info["value"]))
+    elements_table = [driver.find_elements(by=getByType(
+        info["htmlTag"]), value=info["value"]) for info in config["savedInfos"]]
     return tuple(elements_table)
 
 
@@ -131,16 +128,16 @@ def modifyElement(config, elements_table, i, j):
 
 def elementsToDataframe(config, elements_table):
     data = []
-    for j in range(len(elements_table[0])):  # i number of companies
-        company = {}
-        for i in range(len(config["savedInfos"])):  # j number of infos
+    for j in range(len(elements_table[0])):  # i number of rows of data fetched
+        sub_data = {}
+        for i in range(len(config["savedInfos"])):  # j number of infos columns
             try:
-                company[config["savedInfos"][i]["saveAs"]] = modifyElement(
+                sub_data[config["savedInfos"][i]["saveAs"]] = modifyElement(
                     config, elements_table, i, j)
             except IndexError:
                 print("Error while getting element")
                 pass
-        data.append(company)
+        data.append(sub_data)
     return DataFrame().from_records(data)
 
 
