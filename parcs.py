@@ -48,7 +48,8 @@ def setDriver():
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
         print(e)
-        print("Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
+        print(
+            "Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
         exit(1)
     return driver
 
@@ -129,17 +130,17 @@ def getElement(config, elements_table, i, j):
     try:
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
-        print(e)
-        print("Cant load element")
-        pass # TODO check if passing good
+        print(e +
+              ": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
+        pass
 
 
-def dictOfElements(config, elements_table, j):
+def createInformationDict(config, elements_table, j):
     return {config["savedInfos"][i]["saveAs"]: getElement(config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
 
 
 def elementsToDataframe(config, elements_table):
-    return DataFrame().from_records([dictOfElements(config, elements_table, j)
+    return DataFrame().from_records([createInformationDict(config, elements_table, j)
                                      for j, _ in enumerate(elements_table[0])])
 
 
