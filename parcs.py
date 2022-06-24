@@ -195,55 +195,55 @@ def createTkWindow(driver):
         relief="ridge"
     )
     canvas.place(x=0, y=0)
-    image_image_1 = PhotoImage(
-        file=relative_to_assets("image_1.png"))
-    image_1 = canvas.create_image(
+    background_image = PhotoImage(
+        file=relative_to_assets("background.png"))
+    background = canvas.create_image(
         75.0,
         100.0,
-        image=image_image_1
+        image=background_image
     )
-    button_image_1 = PhotoImage(
-        file=relative_to_assets("button_1.png"))
-    button_1 = Button(
-        image=button_image_1,
+    add_button_image = PhotoImage(
+        file=relative_to_assets("add_button.png"))
+    add_button = Button(
+        image=add_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command = lambda: print("button_3 clicked"),
+        command = lambda: print("add_button clicked"),
         # command=getData(driver),
         relief="flat"
     )
-    button_1.place(
+    add_button.place(
         x=171.0,
         y=97.0,
         width=109.0,
         height=20.0
     )
-    button_image_2 = PhotoImage(
-        file=relative_to_assets("button_2.png"))
-    button_2 = Button(
-        image=button_image_2,
+    see_button_image = PhotoImage(
+        file=relative_to_assets("see_button.png"))
+    see_button = Button(
+        image=see_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command = lambda: print("button_2 clicked"),
+        command = lambda: print("see_button clicked"),
         # command=openTemplatesFolder(),
         relief="flat"
     )
-    button_2.place(
+    see_button.place(
         x=170.0,
         y=68.0,
         width=113.0,
         height=20.0
     )
-    button_image_3 = PhotoImage(
-        file=relative_to_assets("button_3.png"))
-    button_3 = Button(
-        image=button_image_3,
+    save_button_image = PhotoImage(
+        file=relative_to_assets("save_button.png"))
+    save_button = Button(
+        image=save_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_3 clicked"),
+        command=lambda: print("save_button clicked"),
         relief="flat"
     )
-    button_3.place(
+    save_button.place(
         x=170.0,
         y=20.0,
         width=110.0,
@@ -338,6 +338,7 @@ def createTkWindow(driver):
         outline="")
     window.resizable(False, False)
     window.mainloop()
+
 
 def main():
     initChromeWindow()
