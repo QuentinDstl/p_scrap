@@ -9,12 +9,14 @@ from pandas import DataFrame
 from json import loads as JsonLoads
 # using cmd and gettting file tree
 from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
-from os import system as OsSystem, listdir as OsListdir
+from os import system as OsSystem, listdir as OsListdir, getenv as OsGetenv
+# loading the environment variables
+from dotenv import load_dotenv
 
+load_dotenv()
 
 ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 
-CONFIG_PATH = OsJoin(ROOT_DIR, 'configuration.conf')
 # templates folder path
 DIR_CONFIG_PATH = OsJoin(ROOT_DIR, r'templates\\')
 # directory of the user for the chrome driver
@@ -26,11 +28,8 @@ DRIVER_PATH = OsJoin(ROOT_DIR, r'driver\\chromedriver.exe')
 
 
 def initChromeWindow():
-    # TODO faire un installeur pour pouvoir save les variables global suivante dans un fichier
-    # directory of the chrome application where chrome.exe is located
-    DIR_CHROMEAPP_PATH = r'C:\\Program Files\\Google\\Chrome\\Application\\'
-    # port to use for the chrome debugger
-    PORT = 9222
+    DIR_CHROMEAPP_PATH = OsGetenv('DIR_CHROMEAPP_PATH')
+    PORT = OsGetenv('PORT')
     OsSystem(
         "cmd /k set PATH=%PATH%;%s" % DIR_CHROMEAPP_PATH)
     OsSystem(
