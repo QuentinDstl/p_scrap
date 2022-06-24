@@ -139,9 +139,8 @@ def dictOfElements(config, elements_table, j):
 
 
 def elementsToDataframe(config, elements_table):
-    data = [dictOfElements(config, elements_table, j)
-            for j in range(len(elements_table[0]))]
-    return DataFrame().from_records(data)
+    return DataFrame().from_records([dictOfElements(config, elements_table, j)
+                                     for j in range(len(elements_table[0]))])
 
 
 def getDataframe(driver, config):
