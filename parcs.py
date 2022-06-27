@@ -38,8 +38,13 @@ TUTO_MESSAGE = "Go to the new\nopened browser.\nGo to a webpage\nand click on 'S
 
 def guiPrint(label, message):
     label.configure(state="normal")
-    label.delete('1.0', END)
     label.insert(END, str(message))
+    label.insert(END, "\n\n")
+    label.configure(state="disabled")
+
+def guiCls(label):
+    label.configure(state="normal")
+    label.delete(1.0, END)
     label.configure(state="disabled")
 
 
@@ -49,7 +54,6 @@ def initChromeWindow():
                        (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
         # this will kill the invoked terminal
         Popen('taskkill /F /PID %i' % prog_start.pid)
-        messagebox.showinfo("Chrome YEES", "YEEEES MGL")
     except Exception as e:
         messagebox.showerror("Chrome Error", str(e))
         return None
@@ -65,9 +69,7 @@ def setDriver():
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
         messagebox.showerror("Driver Error", str(e))
-        # print(e)
         messagebox.showinfo("Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
-        # print("Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
     return driver
 
 
@@ -143,27 +145,26 @@ def modifyElement(config, elements_table, i, j):
         return elements_table[i][j].get_attribute("href")
 
 
-def getElement(config, elements_table, i, j):
+def getElement(label, config, elements_table, i, j):
     try:
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
-        print(e)
-        print(": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
+        guiPrint(label, ": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
         pass
 
 
-def createInformationDict(config, elements_table, j):
-    return {config["savedInfos"][i]["saveAs"]: getElement(config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
+def createInformationDict(label, config, elements_table, j):
+    return {config["savedInfos"][i]["saveAs"]: getElement(label, config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
 
 
-def elementsToDataframe(config, elements_table):
-    return DataFrame().from_records([createInformationDict(config, elements_table, j)
+def elementsToDataframe(label, config, elements_table):
+    return DataFrame().from_records([createInformationDict(label, config, elements_table, j)
                                      for j, _ in enumerate(elements_table[0])])
 
 
-def getDataframe(driver, config):
+def getDataframe(driver, label, config):
     elements = getElements(driver, config)
-    return elementsToDataframe(config, elements)
+    return elementsToDataframe(label, config, elements)
 
 
 def saveDataframe(config, url, dataframe):
@@ -181,10 +182,10 @@ def getData(driver, label):
     try:
         config = loadConfig(driver.current_url)
     except Exception as e:
-        print(e)
+        guiPrint(label, e)
     else:
-        dataframe = getDataframe(driver, config)
-        guiPrint(label, saveDataframe(config, driver.current_url, dataframe))
+        dataframe = getDataframe(driver, label, config)
+        guiPrint(label, "Data saved: " + saveDataframe(config, driver.current_url, dataframe))
 
 
 def openTemplatesFolder():
@@ -276,6 +277,18 @@ def main(driver):
     scrollbar = Scrollbar(window, orient='vertical', command=label.yview)
     scrollbar.place(x=396.0, y=111.0, height=72.0)
     label['yscrollcommand'] = scrollbar.set
+
+    cls_button_image = PhotoImage(
+    file=relativeToAssets("cls_button.png"))
+    cls_button = Button(
+        image=cls_button_image,
+        borderwidth=0,
+        highlightthickness=0,
+        cursor="hand2",
+        command=lambda: guiCls(label),
+        relief="flat"
+    )
+    cls_button.place( x=376.0, y=162.0, width=19.0, height=19.0)
 
     window.resizable(False, False)
     guiPrint(label, "This is a scrollable window to displaye error messages")
