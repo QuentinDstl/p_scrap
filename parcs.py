@@ -201,7 +201,7 @@ def createTkWindow(driver):
     canvas.place(x=0, y=0)
     background_image = PhotoImage(
         file=relative_to_assets("background.png"))
-    background = canvas.create_image(
+    canvas.create_image(
         75.0,
         100.0,
         image=background_image
