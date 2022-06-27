@@ -301,9 +301,11 @@ def main(driver):
                     
 
     def onClosing():
-        driver.close()
-        driver.quit()
-        window.destroy()
+        try:
+            driver.close()
+            driver.quit()
+        finally:
+            window.destroy()
     window.protocol("WM_DELETE_WINDOW", onClosing)
 
     window.mainloop()
