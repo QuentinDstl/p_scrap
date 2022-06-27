@@ -13,7 +13,7 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # GUI
-from tkinter import Tk, Canvas, Text, Button, PhotoImage, END, NS
+from tkinter import Tk, Canvas, Text, Button, PhotoImage, messagebox, END, NS
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
@@ -44,10 +44,15 @@ def guiPrint(label, message):
 
 
 def initChromeWindow():
-    prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
+    try :
+        prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
                        (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
-    # this will kill the invoked terminal
-    Popen('taskkill /F /PID %i' % prog_start.pid)
+        # this will kill the invoked terminal
+        Popen('taskkill /F /PID %i' % prog_start.pid)
+        messagebox.showinfo("Chrome YEES", "YEEEES MGL")
+    except Exception as e:
+        messagebox.showerror("Chrome Error", str(e))
+        return None
 
 
 def setDriver():
@@ -59,9 +64,10 @@ def setDriver():
         driver = webdriver.Chrome(
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
-        print(e)
-        print("Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
-        exit(1)
+        messagebox.showerror("Driver Error", str(e))
+        # print(e)
+        messagebox.showinfo("Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
+        # print("Solution: Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
     return driver
 
 
@@ -184,7 +190,7 @@ def getData(driver, label):
 def openTemplatesFolder():
     Subrun([FILEBROWSER_PATH, DIR_TEMPLATES_PATH])
 
-def createTkWindow(driver):
+def main(driver):
     window = Tk()
 
     window.geometry("432x200")
@@ -273,11 +279,12 @@ def createTkWindow(driver):
 
     window.resizable(False, False)
     guiPrint(label, "This is a scrollable window to displaye error messages")
-    window.update()
     window.mainloop()
 
 
 if __name__ == '__main__':
+    # setup
     initChromeWindow()
     driver = setDriver()
-    createTkWindow(driver)
+    # main
+    main(driver)
