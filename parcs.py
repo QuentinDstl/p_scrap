@@ -35,7 +35,7 @@ FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 # tutorial message to show the user how to use the program
 TUTO_MESSAGE = "Go to the new\nopened browser.\nGo to a webpage\nand click on save\nData, if a related\ntemplate exist it\nwill be save, else\nadd yourself a new\none."
 
-def guiError():
+def guiPrint(canvas, error_text):
     pass
 
 
@@ -174,7 +174,7 @@ def getData(driver):
         print(e)
     else:
         dataframe = getDataframe(driver, config)
-        print(saveDataframe(config, driver.current_url, dataframe))
+        print(text=saveDataframe(config, driver.current_url, dataframe))
 
 
 def openTemplatesFolder():
@@ -260,6 +260,9 @@ def createTkWindow(driver):
         fill="#D9D9D9",
         outline="")
     window.resizable(False, False)
+
+    #TODO print error message here
+
     window.mainloop()
 
 
