@@ -8,7 +8,7 @@ from pandas import DataFrame
 # for charging the config
 from json import loads as JsonLoads
 # charge the templates and see templates files
-from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile, isdir as OsIsdir, normpath as OsNormpath
+from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
 from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
@@ -157,6 +157,9 @@ def saveDataframe(config, url, dataframe):
     dataframe.to_csv(folder_path, index=False)
     return folder_path
 
+
+# TODO chnage name of function to Capital and change those const
+# get ride of the Path
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
@@ -183,6 +186,7 @@ def createTkWindow(driver):
     window = Tk()
 
     window.geometry("300x200")
+    window.title('Pinaack Easy Scraper')
     window.configure(bg="#FFFEFC")
 
     canvas = Canvas(
@@ -209,7 +213,6 @@ def createTkWindow(driver):
         borderwidth=0,
         highlightthickness=0,
         command = lambda: print("add_button clicked"),
-        # command=getData(driver),
         relief="flat"
     )
     add_button.place(
@@ -224,8 +227,8 @@ def createTkWindow(driver):
         image=see_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command = lambda: print("see_button clicked"),
-        # command=openTemplatesFolder(),
+        # command = lambda: print("see_button clicked"),
+        command=lambda: openTemplatesFolder(),
         relief="flat"
     )
     see_button.place(
@@ -240,7 +243,8 @@ def createTkWindow(driver):
         image=save_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("save_button clicked"),
+        # command=lambda: print("save_button clicked"),
+        command=lambda: getData(driver),
         relief="flat"
     )
     save_button.place(
