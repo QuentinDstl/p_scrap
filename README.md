@@ -22,7 +22,7 @@ probleme de template linkedin
 configurer tous les messages d'erreurs
 raise toutes les erreurs possible
 do all the test to see if everything is secured and safe
-no windows init.py -> freeze
+no windows init.py -> freeze : check si le driver est toujours on
 no template -> ...
 
 # IHM PATH
