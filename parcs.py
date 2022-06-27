@@ -36,11 +36,13 @@ FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 # tutorial message to show the user how to use the program
 TUTO_MESSAGE = "Go to the new\nopened browser.\nGo to a webpage\nand click on 'Save\nData', if a related\ntemplate exist it\nwill be save, else\nadd yourself a new\none."
 
+
 def guiPrint(label, message):
     label.configure(state="normal")
     label.insert(END, str(message))
     label.insert(END, "\n\n")
     label.configure(state="disabled")
+
 
 def guiCls(label):
     label.configure(state="normal")
@@ -49,9 +51,9 @@ def guiCls(label):
 
 
 def initChromeWindow():
-    try :
+    try:
         prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
-                       (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
+                            (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
         # this will kill the invoked terminal
         Popen('taskkill /F /PID %i' % prog_start.pid)
     except Exception as e:
@@ -69,7 +71,8 @@ def setDriver():
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
         messagebox.showerror("Driver Error", str(e))
-        messagebox.showinfo("Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
+        messagebox.showinfo(
+            "Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
     return driver
 
 
@@ -185,11 +188,13 @@ def getData(driver, label):
         guiPrint(label, e)
     else:
         dataframe = getDataframe(driver, label, config)
-        guiPrint(label, "Data saved: " + saveDataframe(config, driver.current_url, dataframe))
+        guiPrint(label, "Data saved: " +
+                 saveDataframe(config, driver.current_url, dataframe))
 
 
 def openTemplatesFolder():
     Subrun([FILEBROWSER_PATH, DIR_TEMPLATES_PATH])
+
 
 def main(driver):
     window = Tk()
@@ -220,7 +225,8 @@ def main(driver):
         borderwidth=0,
         highlightthickness=0,
         cursor="hand2",
-        command=lambda: guiPrint(label ,"This function is not working for the moment"),
+        command=lambda: guiPrint(
+            label, "This function is not working for the moment"),
         relief="flat"
     )
     add_button.place(
@@ -266,7 +272,7 @@ def main(driver):
         fill="#FFFEFC",
         font=("Lato", 15 * -1)
     )
-    label=Text(
+    label = Text(
         window, wrap="word",
         state="disabled",
         bg="#ECECEC", bd=0,
@@ -279,7 +285,7 @@ def main(driver):
     label['yscrollcommand'] = scrollbar.set
 
     cls_button_image = PhotoImage(
-    file=relativeToAssets("cls_button.png"))
+        file=relativeToAssets("cls_button.png"))
     cls_button = Button(
         image=cls_button_image,
         borderwidth=0,
@@ -288,10 +294,17 @@ def main(driver):
         command=lambda: guiCls(label),
         relief="flat"
     )
-    cls_button.place( x=376.0, y=162.0, width=19.0, height=19.0)
+    cls_button.place(x=376.0, y=162.0, width=19.0, height=19.0)
 
     window.resizable(False, False)
-    guiPrint(label, "This is a scrollable window to displaye error messages")
+    guiPrint(label, "This is a scrollable window to displaye error messages, by clicking on this cross you will clear the window")
+
+    def onClosing():
+        driver.close()
+        driver.quit()
+        window.destroy()
+    window.protocol("WM_DELETE_WINDOW", onClosing)
+
     window.mainloop()
 
 
