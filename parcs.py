@@ -13,7 +13,7 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # GUI
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Label
 # loading the environment variables
 from dotenv import load_dotenv
 
@@ -35,8 +35,8 @@ FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 # tutorial message to show the user how to use the program
 TUTO_MESSAGE = "Go to the new\nopened browser.\nGo to a webpage\nand click on save\nData, if a related\ntemplate exist it\nwill be save, else\nadd yourself a new\none."
 
-def guiPrint(canvas, error_text):
-    pass
+def guiPrint(label, message):
+    label.config(text=str(message))
 
 
 def initChromeWindow():
@@ -167,19 +167,18 @@ def relativeToAssets(filename):
     return OsJoin(ASSETS_PATH, filename)
 
 
-def getData(driver):
+def getData(driver, label):
     try:
         config = loadConfig(driver.current_url)
     except Exception as e:
         print(e)
     else:
         dataframe = getDataframe(driver, config)
-        print(text=saveDataframe(config, driver.current_url, dataframe))
+        guiPrint(label, saveDataframe(config, driver.current_url, dataframe))
 
 
 def openTemplatesFolder():
     Subrun([FILEBROWSER_PATH, DIR_TEMPLATES_PATH])
-
 
 def createTkWindow(driver):
     window = Tk()
@@ -209,11 +208,12 @@ def createTkWindow(driver):
         image=add_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("add_button clicked"),
+        cursor="hand2",
+        command=lambda: guiPrint(label ,"This function is not working for the moment"),
         relief="flat"
     )
     add_button.place(
-        x=171.0, y=97.0, width=109.0, height=20.0
+        x=171.0, y=87.0, width=109.0, height=20.0
     )
     see_button_image = PhotoImage(
         file=relativeToAssets("see_button.png"))
@@ -221,12 +221,12 @@ def createTkWindow(driver):
         image=see_button_image,
         borderwidth=0,
         highlightthickness=0,
-        # command = lambda: print("see_button clicked"),
+        cursor="hand2",
         command=lambda: openTemplatesFolder(),
         relief="flat"
     )
     see_button.place(
-        x=170.0, y=68.0, width=113.0, height=20.0
+        x=170.0, y=58.0, width=113.0, height=20.0
     )
     save_button_image = PhotoImage(
         file=relativeToAssets("save_button.png"))
@@ -234,12 +234,12 @@ def createTkWindow(driver):
         image=save_button_image,
         borderwidth=0,
         highlightthickness=0,
-        # command=lambda: print("save_button clicked"),
-        command=lambda: getData(driver),
+        cursor="hand2",
+        command=lambda: getData(driver, label),
         relief="flat"
     )
     save_button.place(
-        x=170.0, y=20.0, width=110.0, height=40.0
+        x=170.0, y=10.0, width=110.0, height=40.0
     )
     canvas.create_text(
         14.0, 8.0,
@@ -256,13 +256,19 @@ def createTkWindow(driver):
         font=("Lato", 15 * -1)
     )
     canvas.create_rectangle(
-        160.0, 130.0, 290.0, 190.0,
+        160.0, 120.0, 288.0, 192.0,
         fill="#D9D9D9",
-        outline="")
+        outline=""
+    )
+    label=Label(
+        text="Error messages will be displayed here", 
+        bg="#D9D9D9",
+        wraplength=125, height=4,
+        justify="left",
+        padx=4, pady=4)
+    label.place(x=160.0, y=120.0)
     window.resizable(False, False)
-
-    #TODO print error message here
-
+    window.update()
     window.mainloop()
 
 
