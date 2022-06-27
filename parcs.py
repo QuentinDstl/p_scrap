@@ -32,6 +32,8 @@ ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
 # path to open explorer.exe
 FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 
+# tutorial message to show the user how to use the program
+TUTO_MESSAGE = "Go to the new\nopened browser.\nGo to a webpage\nand click on save\nData, if a related\ntemplate exist it\nwill be save, else\nadd yourself a new\none."
 
 def guiError():
     pass
@@ -183,14 +185,13 @@ def createTkWindow(driver):
     window = Tk()
 
     window.geometry("300x200")
-    window.title('Pinaack Easy Scraper')
+    window.title('Pinaack Website Saver')
     window.configure(bg="#FFFEFC")
 
     canvas = Canvas(
         window,
         bg="#FFFEFC",
-        height=200,
-        width=300,
+        height=200, width=300,
         bd=0,
         highlightthickness=0,
         relief="ridge"
@@ -199,8 +200,7 @@ def createTkWindow(driver):
     background_image = PhotoImage(
         file=relativeToAssets("background.png"))
     canvas.create_image(
-        75.0,
-        100.0,
+        75.0, 100.0,
         image=background_image
     )
     add_button_image = PhotoImage(
@@ -213,10 +213,7 @@ def createTkWindow(driver):
         relief="flat"
     )
     add_button.place(
-        x=171.0,
-        y=97.0,
-        width=109.0,
-        height=20.0
+        x=171.0, y=97.0, width=109.0, height=20.0
     )
     see_button_image = PhotoImage(
         file=relativeToAssets("see_button.png"))
@@ -229,10 +226,7 @@ def createTkWindow(driver):
         relief="flat"
     )
     see_button.place(
-        x=170.0,
-        y=68.0,
-        width=113.0,
-        height=20.0
+        x=170.0, y=68.0, width=113.0, height=20.0
     )
     save_button_image = PhotoImage(
         file=relativeToAssets("save_button.png"))
@@ -245,96 +239,24 @@ def createTkWindow(driver):
         relief="flat"
     )
     save_button.place(
-        x=170.0,
-        y=20.0,
-        width=110.0,
-        height=40.0
+        x=170.0, y=20.0, width=110.0, height=40.0
     )
     canvas.create_text(
-        14.0,
-        8.0,
+        14.0, 8.0,
         anchor="nw",
         text="How to use it ?",
         fill="#FFFEFC",
         font=("Lato Bold", 15 * -1)
     )
     canvas.create_text(
-        14.0,
-        65.0,
+        14.0, 29.0,
         anchor="nw",
-        text="Go to a webpage",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        119.0,
-        anchor="nw",
-        text="template exist it",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        137.0,
-        anchor="nw",
-        text="will be save, else",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        155.0,
-        anchor="nw",
-        text="add yourself a new",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        173.0,
-        anchor="nw",
-        text="one",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        29.0,
-        anchor="nw",
-        text="Go to the new",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        47.0,
-        anchor="nw",
-        text="opened browser",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        83.0,
-        anchor="nw",
-        text="and click on save",
-        fill="#FFFEFC",
-        font=("Lato", 15 * -1)
-    )
-    canvas.create_text(
-        14.0,
-        101.0,
-        anchor="nw",
-        text="Data, if a related",
+        text=TUTO_MESSAGE,
         fill="#FFFEFC",
         font=("Lato", 15 * -1)
     )
     canvas.create_rectangle(
-        160.0,
-        130.0,
-        290.0,
-        190.0,
+        160.0, 130.0, 290.0, 190.0,
         fill="#D9D9D9",
         outline="")
     window.resizable(False, False)
