@@ -297,7 +297,8 @@ def main(driver):
     cls_button.place(x=376.0, y=162.0, width=19.0, height=19.0)
 
     window.resizable(False, False)
-    guiPrint(label, "This is a scrollable window to displaye error messages, by clicking on this cross you will clear the window")
+    guiPrint(label, "This is a scrollable window to display error messages. To clean up messages you have to click on the cross")
+                    
 
     def onClosing():
         driver.close()
