@@ -13,7 +13,6 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # GUI
-from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 # loading the environment variables
 from dotenv import load_dotenv
@@ -32,6 +31,10 @@ DRIVER_PATH = OsJoin(ROOT_DIR, 'driver\\chromedriver.exe')
 ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
 # path to open explorer.exe
 FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
+
+
+def guiError():
+    pass
 
 
 def initChromeWindow():
@@ -158,14 +161,8 @@ def saveDataframe(config, url, dataframe):
     return folder_path
 
 
-# TODO chnage name of function to Capital and change those const
-# get ride of the Path
-OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path("./assets")
-
-
-def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH / Path(path)
+def relativeToAssets(filename):
+    return OsJoin(ASSETS_PATH, filename)
 
 
 def getData(driver):
@@ -200,19 +197,19 @@ def createTkWindow(driver):
     )
     canvas.place(x=0, y=0)
     background_image = PhotoImage(
-        file=relative_to_assets("background.png"))
+        file=relativeToAssets("background.png"))
     canvas.create_image(
         75.0,
         100.0,
         image=background_image
     )
     add_button_image = PhotoImage(
-        file=relative_to_assets("add_button.png"))
+        file=relativeToAssets("add_button.png"))
     add_button = Button(
         image=add_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command = lambda: print("add_button clicked"),
+        command=lambda: print("add_button clicked"),
         relief="flat"
     )
     add_button.place(
@@ -222,7 +219,7 @@ def createTkWindow(driver):
         height=20.0
     )
     see_button_image = PhotoImage(
-        file=relative_to_assets("see_button.png"))
+        file=relativeToAssets("see_button.png"))
     see_button = Button(
         image=see_button_image,
         borderwidth=0,
@@ -238,7 +235,7 @@ def createTkWindow(driver):
         height=20.0
     )
     save_button_image = PhotoImage(
-        file=relative_to_assets("save_button.png"))
+        file=relativeToAssets("save_button.png"))
     save_button = Button(
         image=save_button_image,
         borderwidth=0,
@@ -344,11 +341,7 @@ def createTkWindow(driver):
     window.mainloop()
 
 
-def main():
+if __name__ == '__main__':
     initChromeWindow()
     driver = setDriver()
     createTkWindow(driver)
-
-
-if __name__ == '__main__':
-    main()
