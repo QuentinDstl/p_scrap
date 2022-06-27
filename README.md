@@ -19,7 +19,7 @@ http://sdz.tdct.org/sdz/creer-une-installation.html
 besoin d'avoir une instance chrome ouverte
 save que la première page et pas la dernière
 probleme de template linkedin
-afficher les messages d'erreur dans la window
+configurer tous les messages d'erreurs
 raise toutes les erreurs possible
 do all the test to see if everything is secured and safe
 no windows init.py -> freeze
