@@ -4,3 +4,5 @@ driver/driverProfile
 templates/*
 !templates/example.json
 venv/
+parcs.build/
+parcs.cmd
