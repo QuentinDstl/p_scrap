@@ -22,7 +22,6 @@ voir pour les profil linkedin pour prendre les sections mais voir comment faire
 TEST de debugging :
 raise toutes les erreurs possible
 do all the test to see if everything is secured and safe
-no windows init.py -> freeze : check si le driver est toujours on
 
 # IHM PATH
 
