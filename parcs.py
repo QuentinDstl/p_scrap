@@ -13,10 +13,11 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # GUI
-from tkinter import Tk, Canvas, Text, Button, PhotoImage, messagebox, END, NS
+from tkinter import Tk, Canvas, Text, Button, PhotoImage, messagebox, END
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
+from time import sleep
 
 load_dotenv()
 
@@ -34,7 +35,7 @@ ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
 FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 
 # tutorial message to show the user how to use the program
-TUTO_MESSAGE = "Go to the new\nopened browser.\nGo to a webpage\nand click on 'Save\nData', if a related\ntemplate exist it\nwill be save, else\nadd yourself a new\none."
+TUTO_MESSAGE = "Go to a webpage\non the new opened\nbrowser. Click on\n'Save Data' to save\nthe lastest opened\ntab. If a related \ntemplate exist it will\nbe save, else add\nyourself a new one"
 
 
 def guiPrint(label, message):
@@ -54,11 +55,10 @@ def initChromeWindow():
     try:
         prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
                             (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
-        # this will kill the invoked terminal
-        Popen('taskkill /F /PID %i' % prog_start.pid)
+        sleep(1)
+        prog_start.kill()
     except Exception as e:
         messagebox.showerror("Chrome Error", str(e))
-        return None
 
 
 def setDriver():
@@ -181,7 +181,14 @@ def relativeToAssets(filename):
     return OsJoin(ASSETS_PATH, filename)
 
 
+def getDriverLastWindow(driver):
+    if (len(driver.window_handles) != 1):
+        driver.switch_to.window(window_name=driver.window_handles[-1])
+    return driver
+
+
 def getData(driver, label):
+    driver = getDriverLastWindow(driver)
     try:
         config = loadConfig(driver.current_url)
     except Exception as e:
@@ -298,16 +305,19 @@ def main(driver):
 
     window.resizable(False, False)
     guiPrint(label, "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
-                    
 
     def onClosing():
         try:
-            driver.close()
+            for handle in driver.window_handles:
+                driver.switch_to.window(handle)
+                driver.close()
             driver.quit()
+        except Exception:
+            pass
         finally:
             window.destroy()
+   
     window.protocol("WM_DELETE_WINDOW", onClosing)
-
     window.mainloop()
 
 

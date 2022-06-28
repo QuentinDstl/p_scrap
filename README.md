@@ -16,11 +16,8 @@ use numpy for matrix and use jit on top of it
 http://sdz.tdct.org/sdz/creer-une-installation.html
 
 ## TODO V1
-check si : besoin d'avoir une instance chrome ouverte
-save que la première page et pas la dernière : 
-https://stackoverflow.com/questions/28715942/how-do-i-switch-to-the-active-tab-in-selenium
-
 definir la basic rule -> attention doit etre placé en dernier sinon ca casse tout
+voir pour les profil linkedin pour prendre les sections mais voir comment faire
 
 TEST de debugging :
 raise toutes les erreurs possible
