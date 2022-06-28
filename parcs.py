@@ -205,7 +205,6 @@ def openTemplatesFolder():
 
 def main(driver):
     window = Tk()
-
     window.geometry("432x200")
     window.title('Pinaack Website Saver')
     window.configure(bg="#FFFEFC")
@@ -290,7 +289,6 @@ def main(driver):
     scrollbar = Scrollbar(window, orient='vertical', command=label.yview)
     scrollbar.place(x=396.0, y=111.0, height=72.0)
     label['yscrollcommand'] = scrollbar.set
-
     cls_button_image = PhotoImage(
         file=relativeToAssets("cls_button.png"))
     cls_button = Button(
@@ -302,7 +300,6 @@ def main(driver):
         relief="flat"
     )
     cls_button.place(x=376.0, y=162.0, width=19.0, height=19.0)
-
     window.resizable(False, False)
     guiPrint(label, "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
 
