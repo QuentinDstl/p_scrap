@@ -52,6 +52,9 @@ def guiCls(label):
 
 
 def initChromeWindow():
+    # chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScraperProfile"
+    # ---> for --remote-debugging-port value you can specify any port that is open.
+    # ---> for --user-data-dir flag you need to pass a directory where a new Chrome profile will be created
     try:
         prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
                             (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)

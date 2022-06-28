@@ -1,8 +1,6 @@
-## tuto 
-https://cosmocode.io/how-to-connect-selenium-to-an-existing-browser-that-was-opened-manually/#launch-browser-with-custom-flags
+## tuto
 
-## what have been done to launch project
-add chrome.exe in %PATH% of windows environment variable
+## what have been done to launch projecte
 pip install all the requirements in requirements.txt
 chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScraperProfile"
     - For --remote-debugging-port value you can specify any port that is open.
