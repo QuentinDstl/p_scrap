@@ -209,7 +209,7 @@ def openTemplatesFolder():
 
 def main(driver):
     window = Tk()
-    #TODO create icon.ico
+    # TODO create icon.ico
     window.iconbitmap(relativeToAssets("icon.ico"))
     window.geometry("432x200")
     window.title('Pinaack Website Scraper')
@@ -341,8 +341,9 @@ def main(driver):
             pass
         finally:
             window.destroy()
-    
+
     buffer_windows_len = len(driver.window_handles)
+
     def parallelLoop():
         nonlocal buffer_windows_len
         nonlocal driver
