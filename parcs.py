@@ -210,9 +210,9 @@ def openTemplatesFolder():
 def main(driver):
     window = Tk()
     #TODO create icon.ico
-    # window.iconbitmap(relativeToAssets("icon.ico"))
+    window.iconbitmap(relativeToAssets("icon.ico"))
     window.geometry("432x200")
-    window.title('Pinaack Website Saver')
+    window.title('Pinaack Website Scraper')
     window.configure(bg="#FFFEFC")
 
     canvas = Canvas(
@@ -258,25 +258,14 @@ def main(driver):
         x=170.0, y=74.0, width=113.0, height=20.0
     )
 
+    saving_animation_gif = PhotoImage(file=relativeToAssets("saving_button.gif"))
+    saving_animation = Label(image=saving_animation_gif)
+    saving_animation.place(x=170.0, y=20.0, width=242.0, height=40.0)
+
     def saveData(event):
-        saving_animation = printSavingAnimation()
-        # saving_animation.lift()
+        save_button.lower(belowThis=saving_animation)
         getData(driver, error_textbox)
-        deleteSavingAnimation(saving_animation)
-        # saving_animation.lower()
-
-    
-
-    def printSavingAnimation():
-        saving_animation_gif = PhotoImage(file=relativeToAssets("saving_button.gif"))
-        saving_animation = Label(image=saving_animation_gif)
-        saving_animation.place(x=170.0, y=20.0, width=242.0, height=40.0)
-        return saving_animation
-
-    def deleteSavingAnimation(saving_animation):
-        saving_animation.destroy()
-
-        
+        saving_animation.lower(belowThis=save_button)
 
     save_button_image = PhotoImage(
         file=relativeToAssets("save_button.png"))
