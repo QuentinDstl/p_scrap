@@ -209,6 +209,8 @@ def openTemplatesFolder():
 
 def main(driver):
     window = Tk()
+    #TODO create icon.ico
+    # window.iconbitmap(relativeToAssets("icon.ico"))
     window.geometry("432x200")
     window.title('Pinaack Website Saver')
     window.configure(bg="#FFFEFC")
