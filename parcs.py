@@ -12,7 +12,7 @@ from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, 
 from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
-# GUI
+# using tkinter to create the gui of the project
 from tkinter import Tk, Canvas, Text, Button, PhotoImage, messagebox, END
 from tkinter.ttk import Scrollbar
 # loading the environment variables
@@ -40,8 +40,8 @@ TUTO_MESSAGE = "Go to a webpage\non the new opened\nbrowser. Click on\n'Save Dat
 
 def guiPrint(label, message):
     label.configure(state="normal")
-    label.insert(END, str(message))
-    label.insert(END, "\n\n")
+    label.insert(1.0, "\n\n")
+    label.insert(1.0, str(message))
     label.configure(state="disabled")
 
 

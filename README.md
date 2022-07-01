@@ -17,4 +17,9 @@ http://sdz.tdct.org/sdz/creer-une-installation.html
 
 ## TODO V1
 raise toutes les erreurs possible
-do all the test to see if everything is secured and safe
+do all the test to see if everything is secured and 
+
+add the name of saving tab window
+wainting cursor when downloding
+naming during the saving
+ajouter une config pour la manière dont c'est sauvegardé
