@@ -258,14 +258,14 @@ def main(driver):
         x=170.0, y=74.0, width=113.0, height=20.0
     )
 
-    saving_animation_gif = PhotoImage(file=relativeToAssets("saving_button.gif"))
-    saving_animation = Label(image=saving_animation_gif)
-    saving_animation.place(x=170.0, y=20.0, width=242.0, height=40.0)
+    # saving_animation_gif = PhotoImage(file=relativeToAssets("saving_button.gif"))
+    # saving_animation = Label(image=saving_animation_gif)
+    # saving_animation.place(x=170.0, y=20.0, width=242.0, height=40.0)
 
     def saveData(event):
-        save_button.lower(belowThis=saving_animation)
+        # save_button.lower(belowThis=saving_animation)
         getData(driver, error_textbox)
-        saving_animation.lower(belowThis=save_button)
+        # saving_animation.lower(belowThis=save_button)
 
     save_button_image = PhotoImage(
         file=relativeToAssets("save_button.png"))
