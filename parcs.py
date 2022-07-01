@@ -13,7 +13,7 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # using tkinter to create the gui of the project
-from tkinter import Tk, Canvas, Text, Button, PhotoImage, messagebox, END
+from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, END
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
@@ -184,14 +184,15 @@ def relativeToAssets(filename):
     return OsJoin(ASSETS_PATH, filename)
 
 
-def getDriverLastWindow(driver):
-    if (len(driver.window_handles) != 1):
+def setDriverToLast(driver):
+    try:
         driver.switch_to.window(window_name=driver.window_handles[-1])
+    except WebDriverException:
+        exit(1)
     return driver
 
 
 def getData(driver, label):
-    driver = getDriverLastWindow(driver)
     try:
         config = loadConfig(driver.current_url)
     except Exception as e:
@@ -235,7 +236,7 @@ def main(driver):
         highlightthickness=0,
         cursor="hand2",
         command=lambda: guiPrint(
-            label, "This function is not working for the moment"),
+            error_textbox, "This function is not working for the moment"),
         relief="flat"
     )
     add_button.place(
@@ -254,6 +255,27 @@ def main(driver):
     see_button.place(
         x=170.0, y=74.0, width=113.0, height=20.0
     )
+
+    def saveData(event):
+        saving_animation = printSavingAnimation()
+        # saving_animation.lift()
+        getData(driver, error_textbox)
+        deleteSavingAnimation(saving_animation)
+        # saving_animation.lower()
+
+    
+
+    def printSavingAnimation():
+        saving_animation_gif = PhotoImage(file=relativeToAssets("saving_button.gif"))
+        saving_animation = Label(image=saving_animation_gif)
+        saving_animation.place(x=170.0, y=20.0, width=242.0, height=40.0)
+        return saving_animation
+
+    def deleteSavingAnimation(saving_animation):
+        saving_animation.destroy()
+
+        
+
     save_button_image = PhotoImage(
         file=relativeToAssets("save_button.png"))
     save_button = Button(
@@ -261,12 +283,23 @@ def main(driver):
         borderwidth=0,
         highlightthickness=0,
         cursor="hand2",
-        command=lambda: getData(driver, label),
+        command=lambda: saveData(None),
         relief="flat"
     )
     save_button.place(
         x=170.0, y=20.0, width=242.0, height=40.0
     )
+    save_info = Label(
+        text=driver.title,
+        anchor="nw",
+        bg="#FD222B", fg="#FFFEFC",
+        height="1", width="18",
+        cursor="hand2",
+        font=("Lato", 14 * -1)
+    )
+    save_info.place(x=246.0, y=30.0)
+    save_info.bind("<Button-1>", saveData)
+
     canvas.create_text(
         14.0, 8.0,
         anchor="nw",
@@ -281,17 +314,18 @@ def main(driver):
         fill="#FFFEFC",
         font=("Lato", 15 * -1)
     )
-    label = Text(
+    error_textbox = Text(
         window, wrap="word",
         state="disabled",
         bg="#ECECEC", bd=0,
         width=27, height=4,
         padx=4, pady=4,
     )
-    label.place(x=171.0, y=111.0)
-    scrollbar = Scrollbar(window, orient='vertical', command=label.yview)
+    error_textbox.place(x=171.0, y=111.0)
+    scrollbar = Scrollbar(window, orient='vertical',
+                          command=error_textbox.yview)
     scrollbar.place(x=396.0, y=111.0, height=72.0)
-    label['yscrollcommand'] = scrollbar.set
+    error_textbox['yscrollcommand'] = scrollbar.set
     cls_button_image = PhotoImage(
         file=relativeToAssets("cls_button.png"))
     cls_button = Button(
@@ -299,12 +333,12 @@ def main(driver):
         borderwidth=0,
         highlightthickness=0,
         cursor="hand2",
-        command=lambda: guiCls(label),
+        command=lambda: guiCls(error_textbox),
         relief="flat"
     )
     cls_button.place(x=376.0, y=162.0, width=19.0, height=19.0)
     window.resizable(False, False)
-    guiPrint(label, "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
+    guiPrint(error_textbox, "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
 
     def onClosing():
         try:
@@ -316,8 +350,19 @@ def main(driver):
             pass
         finally:
             window.destroy()
-   
+    
+    buffer_windows_len = len(driver.window_handles)
+    def parallelLoop():
+        nonlocal buffer_windows_len
+        nonlocal driver
+        if(buffer_windows_len != len(driver.window_handles)):
+            buffer_windows_len = len(driver.window_handles)
+            driver = setDriverToLast(driver)
+        save_info.configure(text=driver.title)
+        window.after(200, parallelLoop)
+
     window.protocol("WM_DELETE_WINDOW", onClosing)
+    save_info.after(1000, parallelLoop)
     window.mainloop()
 
 
