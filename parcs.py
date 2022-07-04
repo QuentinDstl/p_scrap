@@ -207,6 +207,13 @@ def openTemplatesFolder():
     Subrun([FILEBROWSER_PATH, DIR_TEMPLATES_PATH])
 
 
+def toggleButtonSaving(button, saving, saving_image, base_image):
+    if(saving):
+        button.config(image=saving_image)
+    else:
+        button.config(image=base_image)
+
+
 def main(driver):
     window = Tk()
     # TODO create icon.ico
@@ -258,15 +265,15 @@ def main(driver):
         x=170.0, y=74.0, width=113.0, height=20.0
     )
 
-    # saving_animation_gif = PhotoImage(file=relativeToAssets("saving_button.gif"))
-    # saving_animation = Label(image=saving_animation_gif)
-    # saving_animation.place(x=170.0, y=20.0, width=242.0, height=40.0)
-
     def saveData(event):
-        # save_button.lower(belowThis=saving_animation)
-        getData(driver, error_textbox)
-        # saving_animation.lower(belowThis=save_button)
+        toggleButtonSaving(save_button, True, saving_button_image, save_button_image)
+        save_info.place_forget() # delete label
+        # getData(driver, error_textbox)
+        # save_info.place(x=246.0, y=30.0)
+        # toggleButtonSaving(save_button, False, saving_button_image, save_button_image)
 
+    saving_button_image = PhotoImage(
+        file=relativeToAssets("saving_button.png"))
     save_button_image = PhotoImage(
         file=relativeToAssets("save_button.png"))
     save_button = Button(
@@ -276,6 +283,7 @@ def main(driver):
         cursor="hand2",
         command=lambda: saveData(None),
         relief="flat"
+        # relief="sunken"
     )
     save_button.place(
         x=170.0, y=20.0, width=242.0, height=40.0
