@@ -18,6 +18,7 @@ from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
 from time import sleep
+from threading import Thread
 
 load_dotenv()
 
@@ -192,7 +193,7 @@ def setDriverToLast(driver):
     return driver
 
 
-def getData(driver, label):
+def getData(driver, label, save_info, save_button, saving_button_image, save_button_image):
     try:
         config = loadConfig(driver.current_url)
     except Exception as e:
@@ -201,6 +202,9 @@ def getData(driver, label):
         dataframe = getDataframe(driver, label, config)
         guiPrint(label, "Data saved: " +
                  saveDataframe(config, driver.current_url, dataframe))
+    finally:
+        save_info.place(x=246.0, y=30.0)
+        toggleButtonSaving(save_button, False, saving_button_image, save_button_image)
 
 
 def openTemplatesFolder():
@@ -212,6 +216,34 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
         button.config(image=saving_image)
     else:
         button.config(image=base_image)
+
+# def monitor(thread):
+#         if thread.is_alive():
+#             window.after(200, lambda: window.monitor(thread))
+#         else:
+#             save_info.place(x=246.0, y=30.0)
+#             toggleButtonSaving(save_button, False, saving_button_image, save_button_image)
+
+# def getData(driver, label):
+#     scraper_thread = AsyncScraper(driver, label)
+#     scraper_thread.start()
+#     monitor(scraper_thread)
+
+class AsyncScraper(Thread):
+    def __init__(self, driver, label):
+        super().__init__()
+        self.driver = driver
+        self.label = label
+
+    def run(self):
+        try:
+            config = loadConfig(self.driver.current_url)
+        except Exception as e:
+            guiPrint(self.label, e)
+        else:
+            dataframe = getDataframe(self.driver, self.label, config)
+            guiPrint(self.label, "Data saved: " +
+                    saveDataframe(config, self.driver.current_url, dataframe))
 
 
 def main(driver):
@@ -268,7 +300,7 @@ def main(driver):
     def saveData(event):
         toggleButtonSaving(save_button, True, saving_button_image, save_button_image)
         save_info.place_forget() # delete label
-        # getData(driver, error_textbox)
+        getData(driver, error_textbox, save_info, save_button, saving_button_image, save_button_image)
         # save_info.place(x=246.0, y=30.0)
         # toggleButtonSaving(save_button, False, saving_button_image, save_button_image)
 
