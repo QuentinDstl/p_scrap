@@ -232,16 +232,15 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
 
 
 class AsyncScraper(Thread):
-    def __init__(self, driver, label):
+    def __init__(self, driver, error_textbox):
         super().__init__()
         self.driver = driver
-        self.label = label
-
+        self.error_textbox = error_textbox
     def run(self):
         try:
-            config = loadConfig(self.driver.current_url)
+            config = loadConfig(driver.current_url)
         except Exception as e:
-            guiPrint(self.label, e)
+            guiPrint(self.error_textbox, e)
         else:
             dataframe = getDataframe(self.driver, self.label, config)
             guiPrint(self.label, "Data saved: " +
