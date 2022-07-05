@@ -242,9 +242,9 @@ class AsyncScraper(Thread):
         except Exception as e:
             guiPrint(self.error_textbox, e)
         else:
-            dataframe = getDataframe(self.driver, self.label, config)
-            guiPrint(self.label, "Data saved: " +
-                    saveDataframe(config, self.driver.current_url, dataframe))
+            dataframe = getDataframe(driver, self.error_textbox, config)
+            guiPrint(self.error_textbox, "Data saved: " +
+                     saveDataframe(config, driver.current_url, dataframe))
 
 
 class App(Tk):
