@@ -389,21 +389,6 @@ class App(Tk):
         except Exception:
             pass
         finally:
-
-    buffer_windows_len = len(driver.window_handles)
-
-    def parallelLoop():
-        nonlocal buffer_windows_len
-        nonlocal driver
-        if(buffer_windows_len != len(driver.window_handles)):
-            buffer_windows_len = len(driver.window_handles)
-            driver = setDriverToLast(driver)
-        save_info.configure(text=driver.title)
-        window.after(200, parallelLoop)
-
-    window.protocol("WM_DELETE_WINDOW", onClosing)
-    save_info.after(1000, parallelLoop)
-    window.mainloop()
             self.destroy()
     def parallelLoop(self):
         if(self.buffer_windows_len != len(self.driver.window_handles)):
