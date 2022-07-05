@@ -390,6 +390,7 @@ class App(Tk):
             pass
         finally:
             self.destroy()
+
     def parallelLoop(self):
         if(self.buffer_windows_len != len(self.driver.window_handles)):
             self.buffer_windows_len = len(self.driver.window_handles)
