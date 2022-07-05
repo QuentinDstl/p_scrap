@@ -236,6 +236,7 @@ class AsyncScraper(Thread):
         super().__init__()
         self.driver = driver
         self.error_textbox = error_textbox
+
     def run(self):
         try:
             config = loadConfig(driver.current_url)
@@ -272,20 +273,39 @@ class App(Tk):
 
     def createBackground(self):
         self.canvas = Canvas(
-            self, bg="#FFFEFC", height=200, width=432,
-            bd=0, highlightthickness=0, relief="ridge")
+            self,
+            bg="#FFFEFC",
+            height=200,
+            width=432,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
         self.canvas.place(x=0, y=0)
         self.background_image = PhotoImage(
             file=relativeToAssets("background.png"))
-        self.canvas.create_image(75.0, 100.0, image=self.background_image)
+        self.canvas.create_image(
+            75.0,
+            100.0,
+            image=self.background_image
+        )
 
     def createTutoSideText(self):
         self.canvas.create_text(
-            14.0, 8.0, anchor="nw", text="How to use it ?",
-            fill="#FFFEFC", font=("Lato Bold", 15 * -1))
+            14.0,
+            8.0,
+            anchor="nw",
+            text="How to use it ?",
+            fill="#FFFEFC",
+            font=("Lato Bold", 15 * -1)
+        )
         self.canvas.create_text(
-            14.0, 29.0, anchor="nw", text=TUTO_MESSAGE,
-            fill="#FFFEFC", font=("Lato", 15 * -1)
+            14.0,
+            29.0,
+            anchor="nw",
+            text=TUTO_MESSAGE,
+            fill="#FFFEFC",
+            font=("Lato", 15 * -1)
         )
 
     def monitor(self, thread):
@@ -319,11 +339,14 @@ class App(Tk):
             cursor="hand2",
             command=lambda: self.saveData(None),
             relief="flat"
-            #TODO delete saving animation without breaking design
+            # TODO delete saving animation without breaking design
             # relief="sunken"
         )
         self.save_button.place(
-            x=170.0, y=20.0, width=242.0, height=40.0
+            x=170.0,
+            y=20.0,
+            width=242.0,
+            height=40.0
         )
         self.save_info = Label(
             text=driver.title,
@@ -340,18 +363,38 @@ class App(Tk):
         self.see_button_image = PhotoImage(
             file=relativeToAssets("see_button.png"))
         self.see_button = Button(
-            image=self.see_button_image, borderwidth=0, highlightthickness=0,
-            cursor="hand2", command=lambda: openTemplatesFolder(), relief="flat")
-        self.see_button.place(x=170.0, y=74.0, width=113.0, height=20.0)
+            image=self.see_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            cursor="hand2",
+            command=lambda: openTemplatesFolder(),
+            relief="flat"
+        )
+        self.see_button.place(
+            x=170.0,
+            y=74.0,
+            width=113.0,
+            height=20.0
+        )
 
     def createAddButton(self):
         self.add_button_image = PhotoImage(
             file=relativeToAssets("add_button.png"))
-        self.add_button = Button(image=self.add_button_image, borderwidth=0, highlightthickness=0,
-                                 cursor="hand2", command=lambda: guiPrint(
-                                     self.error_textbox, "This function is not working for the moment"),
-                                 relief="flat")
-        self.add_button.place(x=303.0, y=74.0, width=109.0, height=20.0)
+        self.add_button = Button(
+            image=self.add_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            cursor="hand2",
+            command=lambda: guiPrint(
+                self.error_textbox, "This function is not working for the moment"),
+            relief="flat"
+        )
+        self.add_button.place(
+            x=303.0,
+            y=74.0,
+            width=109.0,
+            height=20.0
+        )
 
     def createUiTerminal(self):
         self.error_textbox = Text(
@@ -362,8 +405,11 @@ class App(Tk):
             padx=4, pady=4,
         )
         self.error_textbox.place(x=171.0, y=111.0)
-        scrollbar = Scrollbar(self, orient='vertical',
-                              command=self.error_textbox.yview)
+        scrollbar = Scrollbar(
+            self,
+            orient='vertical',
+            command=self.error_textbox.yview
+        )
         scrollbar.place(x=396.0, y=111.0, height=72.0)
         self.error_textbox['yscrollcommand'] = scrollbar.set
         self.cls_button_image = PhotoImage(
@@ -376,7 +422,12 @@ class App(Tk):
             command=lambda: guiCls(self.error_textbox),
             relief="flat"
         )
-        self.cls_button.place(x=376.0, y=162.0, width=19.0, height=19.0)
+        self.cls_button.place(
+            x=376.0,
+            y=162.0,
+            width=19.0,
+            height=19.0
+        )
         guiPrint(self.error_textbox,
                  "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
 
