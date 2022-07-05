@@ -374,6 +374,13 @@ def main(driver):
     guiPrint(error_textbox, "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
 
     def onClosing():
+    def monitor(self, thread):
+        if thread.is_alive():
+            self.after(200, lambda: self.monitor(thread))
+        else:
+            self.save_info.place(x=246.0, y=30.0)
+            toggleButtonSaving(self.save_button, False,
+                               self.saving_button_image, self.save_button_image)
         try:
             for handle in driver.window_handles:
                 driver.switch_to.window(handle)
