@@ -247,6 +247,47 @@ class AsyncScraper(Thread):
                     saveDataframe(config, self.driver.current_url, dataframe))
 
 
+class App(Tk):
+    def __init__(self, driver):
+        super().__init__()
+
+        self.driver = driver
+        self.geometry("432x200")
+        self.iconbitmap(relativeToAssets("icon.ico"))
+        self.title('Pinaack Website Scraper')
+        self.configure(bg="#FFFEFC")
+        self.resizable(False, False)
+
+        self.createBackground()
+        self.createTutoSideText()
+        self.createSaveButton()
+        self.createSeeButton()
+        self.createAddButton()
+        self.createUiTerminal()
+
+        self.protocol("WM_DELETE_WINDOW", self.onClosing)
+
+        self.buffer_windows_len = len(driver.window_handles)
+        self.save_info.after(1000, self.parallelLoop)
+
+    def createBackground(self):
+        self.canvas = Canvas(
+            self, bg="#FFFEFC", height=200, width=432,
+            bd=0, highlightthickness=0, relief="ridge")
+        self.canvas.place(x=0, y=0)
+        self.background_image = PhotoImage(
+            file=relativeToAssets("background.png"))
+        self.canvas.create_image(75.0, 100.0, image=self.background_image)
+
+    def createTutoSideText(self):
+        self.canvas.create_text(
+            14.0, 8.0, anchor="nw", text="How to use it ?",
+            fill="#FFFEFC", font=("Lato Bold", 15 * -1))
+        self.canvas.create_text(
+            14.0, 29.0, anchor="nw", text=TUTO_MESSAGE,
+            fill="#FFFEFC", font=("Lato", 15 * -1)
+        )
+
     def monitor(self, thread):
         if thread.is_alive():
             self.after(200, lambda: self.monitor(thread))
@@ -254,6 +295,92 @@ class AsyncScraper(Thread):
             self.save_info.place(x=246.0, y=30.0)
             toggleButtonSaving(self.save_button, False,
                                self.saving_button_image, self.save_button_image)
+
+    def getData(self):
+        scraper_thread = AsyncScraper(self.driver, self.error_textbox)
+        scraper_thread.start()
+        self.monitor(scraper_thread)
+
+    def saveData(self, event):
+        toggleButtonSaving(self.save_button, True,
+                           self.saving_button_image, self.save_button_image)
+        self.save_info.place_forget()  # delete error_textbox
+        self.getData()
+
+    def createSaveButton(self):
+        self.saving_button_image = PhotoImage(
+            file=relativeToAssets("saving_button.png"))
+        self.save_button_image = PhotoImage(
+            file=relativeToAssets("save_button.png"))
+        self.save_button = Button(
+            image=self.save_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            cursor="hand2",
+            command=lambda: self.saveData(None),
+            relief="flat"
+            #TODO delete saving animation without breaking design
+            # relief="sunken"
+        )
+        self.save_button.place(
+            x=170.0, y=20.0, width=242.0, height=40.0
+        )
+        self.save_info = Label(
+            text=driver.title,
+            anchor="nw",
+            bg="#FD222B", fg="#FFFEFC",
+            height="1", width="18",
+            cursor="hand2",
+            font=("Lato", 14 * -1)
+        )
+        self.save_info.place(x=246.0, y=30.0)
+        self.save_info.bind("<Button-1>", self.saveData)
+
+    def createSeeButton(self):
+        self.see_button_image = PhotoImage(
+            file=relativeToAssets("see_button.png"))
+        self.see_button = Button(
+            image=self.see_button_image, borderwidth=0, highlightthickness=0,
+            cursor="hand2", command=lambda: openTemplatesFolder(), relief="flat")
+        self.see_button.place(x=170.0, y=74.0, width=113.0, height=20.0)
+
+    def createAddButton(self):
+        self.add_button_image = PhotoImage(
+            file=relativeToAssets("add_button.png"))
+        self.add_button = Button(image=self.add_button_image, borderwidth=0, highlightthickness=0,
+                                 cursor="hand2", command=lambda: guiPrint(
+                                     self.error_textbox, "This function is not working for the moment"),
+                                 relief="flat")
+        self.add_button.place(x=303.0, y=74.0, width=109.0, height=20.0)
+
+    def createUiTerminal(self):
+        self.error_textbox = Text(
+            self, wrap="word",
+            state="disabled",
+            bg="#ECECEC", bd=0,
+            width=27, height=4,
+            padx=4, pady=4,
+        )
+        self.error_textbox.place(x=171.0, y=111.0)
+        scrollbar = Scrollbar(self, orient='vertical',
+                              command=self.error_textbox.yview)
+        scrollbar.place(x=396.0, y=111.0, height=72.0)
+        self.error_textbox['yscrollcommand'] = scrollbar.set
+        self.cls_button_image = PhotoImage(
+            file=relativeToAssets("cls_button.png"))
+        self.cls_button = Button(
+            image=self.cls_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            cursor="hand2",
+            command=lambda: guiCls(self.error_textbox),
+            relief="flat"
+        )
+        self.cls_button.place(x=376.0, y=162.0, width=19.0, height=19.0)
+        guiPrint(self.error_textbox,
+                 "This is a scrollable window to display error messages. To clean up messages click on the cross ->")
+
+    def onClosing(self):
         try:
             for handle in driver.window_handles:
                 driver.switch_to.window(handle)
@@ -278,6 +405,13 @@ class AsyncScraper(Thread):
     window.protocol("WM_DELETE_WINDOW", onClosing)
     save_info.after(1000, parallelLoop)
     window.mainloop()
+            self.destroy()
+    def parallelLoop(self):
+        if(self.buffer_windows_len != len(self.driver.window_handles)):
+            self.buffer_windows_len = len(self.driver.window_handles)
+            self.driver = setDriverToLast(self.driver)
+        self.save_info.configure(text=self.driver.title)
+        self.after(200, self.parallelLoop)
 
 
 if __name__ == '__main__':
