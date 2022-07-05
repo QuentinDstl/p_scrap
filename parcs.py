@@ -203,18 +203,21 @@ def setDriverToLast(driver):
     return driver
 
 
-def getData(driver, label, save_info, save_button, saving_button_image, save_button_image):
+"""
+def getData(driver, error_textbox, save_info, save_button, saving_button_image, save_button_image):
     try:
         config = loadConfig(driver.current_url)
     except Exception as e:
-        guiPrint(label, e)
+        guiPrint(error_textbox, e)
     else:
-        dataframe = getDataframe(driver, label, config)
-        guiPrint(label, "Data saved: " +
+        dataframe = getDataframe(driver, error_textbox, config)
+        guiPrint(error_textbox, "Data saved: " +
                  saveDataframe(config, driver.current_url, dataframe))
     finally:
         save_info.place(x=246.0, y=30.0)
-        toggleButtonSaving(save_button, False, saving_button_image, save_button_image)
+        toggleButtonSaving(save_button, False,
+                           saving_button_image, save_button_image)
+"""
 
 
 def openTemplatesFolder():
