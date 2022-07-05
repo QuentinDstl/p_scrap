@@ -39,17 +39,18 @@ FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 TUTO_MESSAGE = "Go to a webpage\non the new opened\nbrowser. Click on\n'Save Data' to save\nthe lastest opened\ntab. If a related \ntemplate exist it will\nbe save, else add\nyourself a new one"
 
 
-def guiPrint(label, message):
-    label.configure(state="normal")
-    label.insert(1.0, "\n\n")
-    label.insert(1.0, str(message))
-    label.configure(state="disabled")
+def guiPrint(error_textbox, message):
+    error_textbox.configure(state="normal")
+    error_textbox.insert(1.0, "\n\n")
+    error_textbox.insert(1.0, str(message))
+    error_textbox.configure(state="disabled")
 
 
-def guiCls(label):
-    label.configure(state="normal")
-    label.delete(1.0, END)
-    label.configure(state="disabled")
+def guiCls(error_textbox):
+    error_textbox.configure(state="normal")
+    error_textbox.delete(1.0, END)
+    error_textbox.configure(state="disabled")
+
 
 
 def initChromeWindow():
