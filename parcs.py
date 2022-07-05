@@ -162,26 +162,26 @@ def modifyElement(config, elements_table, i, j):
         return elements_table[i][j].get_attribute("href")
 
 
-def getElement(label, config, elements_table, i, j):
+def getElement(error_textbox, config, elements_table, i, j):
     try:
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
-        guiPrint(label, ": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
+        guiPrint(error_textbox, ": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
         pass
 
 
-def createInformationDict(label, config, elements_table, j):
-    return {config["savedInfos"][i]["saveAs"]: getElement(label, config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
+def createInformationDict(error_textbox, config, elements_table, j):
+    return {config["savedInfos"][i]["saveAs"]: getElement(error_textbox, config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
 
 
-def elementsToDataframe(label, config, elements_table):
-    return DataFrame().from_records([createInformationDict(label, config, elements_table, j)
+def elementsToDataframe(error_textbox, config, elements_table):
+    return DataFrame().from_records([createInformationDict(error_textbox, config, elements_table, j)
                                      for j, _ in enumerate(elements_table[0])])
 
 
-def getDataframe(driver, label, config):
+def getDataframe(driver, error_textbox, config):
     elements = getElements(driver, config)
-    return elementsToDataframe(label, config, elements)
+    return elementsToDataframe(error_textbox, config, elements)
 
 
 def saveDataframe(config, url, dataframe):
