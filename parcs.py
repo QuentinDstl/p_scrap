@@ -382,14 +382,13 @@ class App(Tk):
 
     def onClosing(self):
         try:
-            for handle in driver.window_handles:
-                driver.switch_to.window(handle)
-                driver.close()
-            driver.quit()
+            for handle in self.driver.window_handles:
+                self.driver.switch_to.window(handle)
+                self.driver.close()
+            self.driver.quit()
         except Exception:
             pass
         finally:
-            window.destroy()
 
     buffer_windows_len = len(driver.window_handles)
 
