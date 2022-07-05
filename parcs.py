@@ -52,6 +52,10 @@ def guiCls(error_textbox):
     error_textbox.configure(state="disabled")
 
 
+"""
+---------------------------------------------------- Open Browser ----------------------------------------------------
+"""
+
 
 def initChromeWindow():
     # chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScraperProfile"
@@ -64,6 +68,11 @@ def initChromeWindow():
         prog_start.kill()
     except Exception as e:
         messagebox.showerror("Chrome Error", str(e))
+
+
+"""
+---------------------------------------------------- Set Driver ----------------------------------------------------
+"""
 
 
 def setDriver():
