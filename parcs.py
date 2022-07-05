@@ -399,8 +399,7 @@ class App(Tk):
 
 
 if __name__ == '__main__':
-    # setup
     initChromeWindow()
     driver = setDriver()
-    # main
-    main(driver)
+    app = App(driver)
+    app.mainloop()
