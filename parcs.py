@@ -230,17 +230,6 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
     else:
         button.config(image=base_image)
 
-# def monitor(thread):
-#         if thread.is_alive():
-#             window.after(200, lambda: window.monitor(thread))
-#         else:
-#             save_info.place(x=246.0, y=30.0)
-#             toggleButtonSaving(save_button, False, saving_button_image, save_button_image)
-
-# def getData(driver, label):
-#     scraper_thread = AsyncScraper(driver, label)
-#     scraper_thread.start()
-#     monitor(scraper_thread)
 
 class AsyncScraper(Thread):
     def __init__(self, driver, label):
