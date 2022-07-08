@@ -13,7 +13,7 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # using tkinter to create the gui of the project
-from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, END
+from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, Entry, filedialog, END
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
@@ -50,6 +50,10 @@ def guiCls(error_textbox):
     error_textbox.configure(state="normal")
     error_textbox.delete(1.0, END)
     error_textbox.configure(state="disabled")
+
+def setEntry(entry, message):
+    entry.delete(1.0, END)
+    entry.insert(1.0, str(message))
 
 
 """
@@ -184,9 +188,13 @@ def getDataframe(driver, error_textbox, config):
     return elementsToDataframe(error_textbox, config, elements)
 
 
-def saveDataframe(config, url, dataframe):
-    folder_path = OsJoin(
-        OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
+def getSavingPath(config):
+    return OsJoin(OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + ".csv")
+
+
+def saveDataframe(dataframe, folder_path):
+    # folder_path = OsJoin(
+    #     OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
     dataframe.to_csv(folder_path, index=False)
     return folder_path
 
@@ -215,10 +223,11 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
 
 
 class AsyncScraper(Thread):
-    def __init__(self, driver, error_textbox):
+    def __init__(self, driver, error_textbox, saving_path):
         super().__init__()
         self.driver = driver
         self.error_textbox = error_textbox
+        self.saving_path = saving_path
 
     def run(self):
         try:
@@ -228,7 +237,7 @@ class AsyncScraper(Thread):
         else:
             dataframe = getDataframe(driver, self.error_textbox, config)
             guiPrint(self.error_textbox, "Data saved: " +
-                     saveDataframe(config, driver.current_url, dataframe))
+                     saveDataframe(dataframe, self.saving_path))
 
 
 class App(Tk):
@@ -236,15 +245,19 @@ class App(Tk):
         super().__init__()
 
         self.driver = driver
-        self.geometry("432x200")
+        self.geometry("432x240")
         self.iconbitmap(relativeToAssets("icon.ico"))
         self.title('Pinaack Website Scraper')
         self.configure(bg="#FFFEFC")
         self.resizable(False, False)
+        
+        self.saving_path = OsJoin(OsGetenv('SAVE_DATA_PATH'), "data.csv")
+        print(self.saving_path)
 
         self.createBackground()
         self.createTutoSideText()
         self.createSaveButton()
+        self.createPathSaveEntry()
         self.createSeeButton()
         self.createAddButton()
         self.createUiTerminal()
@@ -264,7 +277,10 @@ class App(Tk):
             highlightthickness=0,
             relief="ridge"
         )
-        self.canvas.place(x=0, y=0)
+        self.canvas.place(
+            x=0,
+            y=0
+        )
         self.background_image = PhotoImage(
             file=relativeToAssets("background.png"))
         self.canvas.create_image(
@@ -295,12 +311,15 @@ class App(Tk):
         if thread.is_alive():
             self.after(200, lambda: self.monitor(thread))
         else:
-            self.save_info.place(x=246.0, y=30.0)
+            self.save_info.place(
+                x=246.0,
+                y=30.0
+            )
             toggleButtonSaving(self.save_button, False,
                                self.saving_button_image, self.save_button_image)
 
     def getData(self):
-        scraper_thread = AsyncScraper(self.driver, self.error_textbox)
+        scraper_thread = AsyncScraper(self.driver, self.error_textbox, self.saving_path)
         scraper_thread.start()
         self.monitor(scraper_thread)
 
@@ -339,8 +358,54 @@ class App(Tk):
             cursor="hand2",
             font=("Lato", 14 * -1)
         )
-        self.save_info.place(x=246.0, y=30.0)
+        self.save_info.place(
+            x=246.0,
+            y=30.0
+        )
         self.save_info.bind("<Button-1>", self.saveData)
+
+    def askSavingPath(self):
+        self.saving_path = filedialog.asksaveasfilename(initialdir=OsGetenv(
+            'SAVE_DATA_PATH'), title="Save your file", filetypes=[("csv files", "*.csv")])
+        print(self.saving_path)
+
+    def createPathSaveEntry(self):
+        self.save_to_entry_image = PhotoImage(
+            file=relativeToAssets("save_to_entry.png"))
+        self.entry_bg_1 = self.canvas.create_image(
+            280.0,
+            90.0,
+            image=self.save_to_entry_image
+        )
+        self.save_to_entry = Entry(
+            bd=0,
+            textvariable=self.saving_path,
+            # bg="#00FEFC",
+            bg="#ECECEC",
+            highlightthickness=0
+        )
+        self.save_to_entry.place(
+            x=197.0,
+            y=81.0,
+            width=185.0,
+            height=18.0
+        )
+        self.save_to_button_image = PhotoImage(
+            file=relativeToAssets("save_to_button.png"))
+        self.save_to_button = Button(
+            image=self.save_to_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            cursor="hand2",
+            command=lambda: self.askSavingPath(),
+            relief="flat"
+        )
+        self.save_to_button.place(
+            x=386,
+            y=80.0,
+            width=24.0,
+            height=20.0
+        )
 
     def createSeeButton(self):
         self.see_button_image = PhotoImage(
@@ -355,7 +420,7 @@ class App(Tk):
         )
         self.see_button.place(
             x=170.0,
-            y=74.0,
+            y=114.0,
             width=113.0,
             height=20.0
         )
@@ -374,7 +439,7 @@ class App(Tk):
         )
         self.add_button.place(
             x=303.0,
-            y=74.0,
+            y=114.0,
             width=109.0,
             height=20.0
         )
@@ -387,13 +452,20 @@ class App(Tk):
             width=27, height=4,
             padx=4, pady=4,
         )
-        self.error_textbox.place(x=171.0, y=111.0)
+        self.error_textbox.place(
+            x=171.0,
+            y=151.0
+        )
         scrollbar = Scrollbar(
             self,
             orient='vertical',
             command=self.error_textbox.yview
         )
-        scrollbar.place(x=396.0, y=111.0, height=72.0)
+        scrollbar.place(
+            x=396.0,
+            y=151.0,
+            height=72.0
+        )
         self.error_textbox['yscrollcommand'] = scrollbar.set
         self.cls_button_image = PhotoImage(
             file=relativeToAssets("cls_button.png"))
@@ -407,7 +479,7 @@ class App(Tk):
         )
         self.cls_button.place(
             x=376.0,
-            y=162.0,
+            y=202.0,
             width=19.0,
             height=19.0
         )
@@ -429,7 +501,9 @@ class App(Tk):
         if(self.buffer_windows_len != len(self.driver.window_handles)):
             self.buffer_windows_len = len(self.driver.window_handles)
             self.driver = setDriverToLast(self.driver)
+            setEntry(self.save_to_entry, self.saving_path)
         self.save_info.configure(text=self.driver.title)
+        # self.saving_path =
         self.after(200, self.parallelLoop)
 
 
