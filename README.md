@@ -55,11 +55,11 @@ here is `example.json` where you can fin an example of a set of rules. The name 
 {
     "rules": [
         {
-            // this is the name use for the default saved csv
+            this is the name use for the default saved csv
             "csvSavedBeginWith": "Name_for_my_csv",
-            // this is a string that will be use to differentiate pages of a website
+            this is a string that will be use to differentiate pages of a website
             "differenceInUrl": "/particular_path_in_url/",
-            // this is the informations you want to save, you can add more then 4
+            this is the informations you want to save, you can add more then 4
             "savedInfos": [
                 {
                     "htmlTag": "class",
