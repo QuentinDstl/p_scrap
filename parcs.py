@@ -17,6 +17,7 @@ from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, Ent
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
+from configparser import ConfigParser
 from time import sleep
 from threading import Thread
 
@@ -35,6 +36,24 @@ ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
 # path to open explorer.exe
 FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 
+CONFIG_PATH = OsJoin(ROOT_DIR, '.config')
+
+
+def load_config():
+    config = ConfigParser()
+    config.read(CONFIG_PATH)
+    return config
+
+
+def initConfig():
+    config = load_config()
+    global SAVE_DATA_PATH
+    if(config.sections() == []):  # if the config is not found
+        SAVE_DATA_PATH = ""
+    else:
+        SAVE_DATA_PATH = config["SAVING"]["SAVE_DATA_PATH"]
+
+
 # tutorial message to show the user how to use the program
 TUTO_MESSAGE = "Go to a webpage\non the new opened\nbrowser. Click on\n'Save Data' to save\nthe lastest opened\ntab. If a related \ntemplate exist it will\nbe save, else add\nyourself a new one"
 
@@ -50,10 +69,6 @@ def guiCls(error_textbox):
     error_textbox.configure(state="normal")
     error_textbox.delete(1.0, END)
     error_textbox.configure(state="disabled")
-
-def setEntry(entry, message):
-    entry.delete(1.0, END)
-    entry.insert(1.0, str(message))
 
 
 """
@@ -188,15 +203,9 @@ def getDataframe(driver, error_textbox, config):
     return elementsToDataframe(error_textbox, config, elements)
 
 
-def getSavingPath(config):
-    return OsJoin(OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + ".csv")
-
-
-def saveDataframe(dataframe, folder_path):
-    # folder_path = OsJoin(
-    #     OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
-    dataframe.to_csv(folder_path, index=False)
-    return folder_path
+def saveDataframe(dataframe, saving_path):
+    dataframe.to_csv(saving_path, index=False)
+    return saving_path
 
 
 def relativeToAssets(filename):
@@ -223,11 +232,11 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
 
 
 class AsyncScraper(Thread):
-    def __init__(self, driver, error_textbox, saving_path):
+    def __init__(self, driver, error_textbox, saving_name):
         super().__init__()
         self.driver = driver
         self.error_textbox = error_textbox
-        self.saving_path = saving_path
+        self.saving_name = saving_name
 
     def run(self):
         try:
@@ -236,8 +245,28 @@ class AsyncScraper(Thread):
             guiPrint(self.error_textbox, e)
         else:
             dataframe = getDataframe(driver, self.error_textbox, config)
-            guiPrint(self.error_textbox, "Data saved: " +
-                     saveDataframe(dataframe, self.saving_path))
+            if(self.saving_name == ""):
+                self.saving_name = config["csvSavedBeginWith"] + self.driver.current_url.split(
+                    "/", 3)[3].replace("/", "%").replace("?", "@")
+            saving_path = OsJoin(SAVE_DATA_PATH,  self.saving_name + ".csv")
+            guiPrint(self.error_textbox, "Data saved at: " +
+                     saveDataframe(dataframe, saving_path))
+
+
+def saveDataPathToConfig():
+    config = ConfigParser()
+    config["SAVING"] = {}
+    config["SAVING"]["SAVE_DATA_PATH"] = SAVE_DATA_PATH
+    with open(CONFIG_PATH, 'w') as configfile:
+        config.write(configfile)
+
+
+def setDataPath():
+    saving_path = filedialog.askdirectory(
+        initialdir=ROOT_DIR, title="Where to save ?")
+    global SAVE_DATA_PATH
+    SAVE_DATA_PATH = saving_path
+    saveDataPathToConfig()
 
 
 class App(Tk):
@@ -250,9 +279,6 @@ class App(Tk):
         self.title('Pinaack Website Scraper')
         self.configure(bg="#FFFEFC")
         self.resizable(False, False)
-        
-        self.saving_path = OsJoin(OsGetenv('SAVE_DATA_PATH'), "data.csv")
-        print(self.saving_path)
 
         self.createBackground()
         self.createTutoSideText()
@@ -319,7 +345,8 @@ class App(Tk):
                                self.saving_button_image, self.save_button_image)
 
     def getData(self):
-        scraper_thread = AsyncScraper(self.driver, self.error_textbox, self.saving_path)
+        scraper_thread = AsyncScraper(
+            self.driver, self.error_textbox, self.save_to_entry.get())
         scraper_thread.start()
         self.monitor(scraper_thread)
 
@@ -365,45 +392,41 @@ class App(Tk):
         self.save_info.bind("<Button-1>", self.saveData)
 
     def askSavingPath(self):
-        self.saving_path = filedialog.asksaveasfilename(initialdir=OsGetenv(
-            'SAVE_DATA_PATH'), title="Save your file", filetypes=[("csv files", "*.csv")])
-        print(self.saving_path)
+        setDataPath()
 
     def createPathSaveEntry(self):
-        self.save_to_entry_image = PhotoImage(
-            file=relativeToAssets("save_to_entry.png"))
-        self.entry_bg_1 = self.canvas.create_image(
-            280.0,
+        self.save_as_entry_image = PhotoImage(
+            file=relativeToAssets("save_as_entry.png"))
+        self.save_as_bg = self.canvas.create_image(
+            272.0,
             90.0,
-            image=self.save_to_entry_image
+            image=self.save_as_entry_image
         )
         self.save_to_entry = Entry(
             bd=0,
-            textvariable=self.saving_path,
-            # bg="#00FEFC",
             bg="#ECECEC",
             highlightthickness=0
         )
         self.save_to_entry.place(
-            x=197.0,
+            x=198.0,
             y=81.0,
-            width=185.0,
+            width=172.0,
             height=18.0
         )
-        self.save_to_button_image = PhotoImage(
-            file=relativeToAssets("save_to_button.png"))
-        self.save_to_button = Button(
-            image=self.save_to_button_image,
+        self.save_in_button_image = PhotoImage(
+            file=relativeToAssets("save_in_button.png"))
+        self.save_in_button = Button(
+            image=self.save_in_button_image,
             borderwidth=0,
             highlightthickness=0,
             cursor="hand2",
             command=lambda: self.askSavingPath(),
             relief="flat"
         )
-        self.save_to_button.place(
-            x=386,
+        self.save_in_button.place(
+            x=374.0,
             y=80.0,
-            width=24.0,
+            width=38.0,
             height=20.0
         )
 
@@ -501,13 +524,14 @@ class App(Tk):
         if(self.buffer_windows_len != len(self.driver.window_handles)):
             self.buffer_windows_len = len(self.driver.window_handles)
             self.driver = setDriverToLast(self.driver)
-            setEntry(self.save_to_entry, self.saving_path)
         self.save_info.configure(text=self.driver.title)
-        # self.saving_path =
         self.after(200, self.parallelLoop)
 
 
 if __name__ == '__main__':
+    initConfig()
+    if(SAVE_DATA_PATH == ""):
+        setDataPath()
     initChromeWindow()
     driver = setDriver()
     app = App(driver)

@@ -19,5 +19,7 @@ http://sdz.tdct.org/sdz/creer-une-installation.html
 raise toutes les erreurs possible
 do all the test to see if everything is secured and 
 
-naming during the saving
-ajouter une config pour la manière dont c'est sauvegardé
+automatique quand il clic sur le bouton
+manuel quand il clic sur sauvegarder un endroit spécifique ?
+il peut changer le dossier via l'interface bouton
+simplifier le nom des fichiers sauvegardé
