@@ -54,10 +54,6 @@ def initConfig():
         SAVE_DATA_PATH = config["SAVING"]["SAVE_DATA_PATH"]
 
 
-# tutorial message to show the user how to use the program
-TUTO_MESSAGE = "Go to a webpage\non the new opened\nbrowser. Click on\n'Save Data' to save\nthe lastest opened\ntab. If a related \ntemplate exist it will\nbe save, else add\nyourself a new one"
-
-
 def guiPrint(error_textbox, message):
     error_textbox.configure(state="normal")
     error_textbox.insert(1.0, "\n\n")
@@ -274,14 +270,13 @@ class App(Tk):
         super().__init__()
 
         self.driver = driver
-        self.geometry("432x240")
+        self.geometry("282x240")
         self.iconbitmap(relativeToAssets("icon.ico"))
-        self.title('Pinaack Website Scraper')
+        self.title('Pinaack Webscraper')
         self.configure(bg="#FFFEFC")
         self.resizable(False, False)
 
         self.createBackground()
-        self.createTutoSideText()
         self.createSaveButton()
         self.createPathSaveEntry()
         self.createSeeButton()
@@ -298,7 +293,7 @@ class App(Tk):
             self,
             bg="#FFFEFC",
             height=200,
-            width=432,
+            width=282,
             bd=0,
             highlightthickness=0,
             relief="ridge"
@@ -306,31 +301,6 @@ class App(Tk):
         self.canvas.place(
             x=0,
             y=0
-        )
-        self.background_image = PhotoImage(
-            file=relativeToAssets("background.png"))
-        self.canvas.create_image(
-            75.0,
-            100.0,
-            image=self.background_image
-        )
-
-    def createTutoSideText(self):
-        self.canvas.create_text(
-            14.0,
-            8.0,
-            anchor="nw",
-            text="How to use it ?",
-            fill="#FFFEFC",
-            font=("Lato Bold", 15 * -1)
-        )
-        self.canvas.create_text(
-            14.0,
-            29.0,
-            anchor="nw",
-            text=TUTO_MESSAGE,
-            fill="#FFFEFC",
-            font=("Lato", 15 * -1)
         )
 
     def monitor(self, thread):
@@ -372,7 +342,7 @@ class App(Tk):
             # relief="sunken"
         )
         self.save_button.place(
-            x=170.0,
+            x=20.0, 
             y=20.0,
             width=242.0,
             height=40.0
@@ -386,7 +356,7 @@ class App(Tk):
             font=("Lato", 14 * -1)
         )
         self.save_info.place(
-            x=246.0,
+            x=96.0,
             y=30.0
         )
         self.save_info.bind("<Button-1>", self.saveData)
@@ -398,7 +368,7 @@ class App(Tk):
         self.save_as_entry_image = PhotoImage(
             file=relativeToAssets("save_as_entry.png"))
         self.save_as_bg = self.canvas.create_image(
-            272.0,
+            122.0,
             90.0,
             image=self.save_as_entry_image
         )
@@ -408,7 +378,7 @@ class App(Tk):
             highlightthickness=0
         )
         self.save_to_entry.place(
-            x=198.0,
+            x=48.0,
             y=81.0,
             width=172.0,
             height=18.0
@@ -424,7 +394,7 @@ class App(Tk):
             relief="flat"
         )
         self.save_in_button.place(
-            x=374.0,
+            x=224.0,
             y=80.0,
             width=38.0,
             height=20.0
@@ -442,7 +412,7 @@ class App(Tk):
             relief="flat"
         )
         self.see_button.place(
-            x=170.0,
+            x=20.0,
             y=114.0,
             width=113.0,
             height=20.0
@@ -461,7 +431,7 @@ class App(Tk):
             relief="flat"
         )
         self.add_button.place(
-            x=303.0,
+            x=153.0,
             y=114.0,
             width=109.0,
             height=20.0
@@ -476,7 +446,7 @@ class App(Tk):
             padx=4, pady=4,
         )
         self.error_textbox.place(
-            x=171.0,
+            x=21.0,
             y=151.0
         )
         scrollbar = Scrollbar(
@@ -485,7 +455,7 @@ class App(Tk):
             command=self.error_textbox.yview
         )
         scrollbar.place(
-            x=396.0,
+            x=246.0,
             y=151.0,
             height=72.0
         )
@@ -501,7 +471,7 @@ class App(Tk):
             relief="flat"
         )
         self.cls_button.place(
-            x=376.0,
+            x=226.0,
             y=202.0,
             width=19.0,
             height=19.0
