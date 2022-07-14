@@ -18,8 +18,3 @@ http://sdz.tdct.org/sdz/creer-une-installation.html
 ## TODO V1
 raise toutes les erreurs possible
 do all the test to see if everything is secured and 
-
-automatique quand il clic sur le bouton
-manuel quand il clic sur sauvegarder un endroit spécifique ?
-il peut changer le dossier via l'interface bouton
-simplifier le nom des fichiers sauvegardé

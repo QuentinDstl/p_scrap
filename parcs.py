@@ -20,6 +20,9 @@ from dotenv import load_dotenv
 from configparser import ConfigParser
 from time import sleep
 from threading import Thread
+# slugify
+from unicodedata import normalize
+from re import sub
 
 load_dotenv()
 
@@ -199,8 +202,11 @@ def getDataframe(driver, error_textbox, config):
     return elementsToDataframe(error_textbox, config, elements)
 
 
-def saveDataframe(dataframe, saving_path):
-    dataframe.to_csv(saving_path, index=False)
+def saveDataframe(error_textbox, dataframe, saving_path):
+    try:
+        dataframe.to_csv(saving_path, index=False)
+    except ImportError as e:
+        guiPrint(error_textbox, "Name has special characters in it")
     return saving_path
 
 
@@ -227,28 +233,6 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
         button.config(image=base_image)
 
 
-class AsyncScraper(Thread):
-    def __init__(self, driver, error_textbox, saving_name):
-        super().__init__()
-        self.driver = driver
-        self.error_textbox = error_textbox
-        self.saving_name = saving_name
-
-    def run(self):
-        try:
-            config = loadConfig(driver.current_url)
-        except Exception as e:
-            guiPrint(self.error_textbox, e)
-        else:
-            dataframe = getDataframe(driver, self.error_textbox, config)
-            if(self.saving_name == ""):
-                self.saving_name = config["csvSavedBeginWith"] + self.driver.current_url.split(
-                    "/", 3)[3].replace("/", "%").replace("?", "@")
-            saving_path = OsJoin(SAVE_DATA_PATH,  self.saving_name + ".csv")
-            guiPrint(self.error_textbox, "Data saved at: " +
-                     saveDataframe(dataframe, saving_path))
-
-
 def saveDataPathToConfig():
     config = ConfigParser()
     config["SAVING"] = {}
@@ -263,6 +247,38 @@ def setDataPath():
     global SAVE_DATA_PATH
     SAVE_DATA_PATH = saving_path
     saveDataPathToConfig()
+
+
+def slugify(text):
+    text = str(text)
+    text = normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+    text = sub(r'[^\w\s-]', '', text.lower())
+    return sub(r'[-\s]+', '-', text).strip('-_')
+
+
+class AsyncScraper(Thread):
+    def __init__(self, driver, error_textbox, saving_name):
+        super().__init__()
+        self.driver = driver
+        self.error_textbox = error_textbox
+        self.saving_name = slugify(saving_name)
+
+    def run(self):
+        try:
+            config = loadConfig(driver.current_url)
+        except Exception as e:
+            guiPrint(self.error_textbox, e)
+        else:
+            dataframe = getDataframe(driver, self.error_textbox, config)
+            if(self.saving_name == ""):
+                self.saving_name = config["csvSavedBeginWith"] + self.driver.current_url.split(
+                    "/", 3)[3].replace("/", "%").replace("?", "@")
+            if(SAVE_DATA_PATH == ""):
+                setDataPath()
+
+            saving_path = OsJoin(SAVE_DATA_PATH,  self.saving_name + ".csv")
+            guiPrint(self.error_textbox, "Data saved at: " +
+                     saveDataframe(self.error_textbox, dataframe, saving_path))
 
 
 class App(Tk):
@@ -308,7 +324,7 @@ class App(Tk):
             self.after(200, lambda: self.monitor(thread))
         else:
             self.save_info.place(
-                x=246.0,
+                x=96.0,
                 y=30.0
             )
             toggleButtonSaving(self.save_button, False,
@@ -342,7 +358,7 @@ class App(Tk):
             # relief="sunken"
         )
         self.save_button.place(
-            x=20.0, 
+            x=20.0,
             y=20.0,
             width=242.0,
             height=40.0
