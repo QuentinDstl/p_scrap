@@ -11,13 +11,13 @@ You need to clone the repo at this [link](https://github.com/QuentinDstl/p_scarp
 __You may need to change manually some stuff in some of the following files:__
 
 .config file
----------
+------------
 
 | what is in `.config` |||
 |---|---|---|
-| `[SAVING] SAVE_DATA_PATH` | C:/Folder/To/Save/the_result.csv | 💾 where to save the current website |
+| `[SAVING] SAVE_DATA_PATH` | _C:/Folder/To/Save/the_result.csv_ | 💾 where to save the current website |
 
-> ⚠️ If `.config` dont exist it will be created on next launch and you will be asked to chose it
+> ⚠️ If `.config` dont exist it will be created on next launch and you will be asked to chose it.
 
 
 .env file
@@ -25,10 +25,10 @@ __You may need to change manually some stuff in some of the following files:__
 
 | what is in `.env` |||
 |---|---|---|
-| `DIR_CHROMEAPP_PATH` | C:/Program Files/Google/Chrome/Application/ | 📁 use to launch Chrome on debugging mode |
-| `PORT` | 9222 | 🔌port use to launch the new chrome window |
+| `DIR_CHROMEAPP_PATH` | _C:/Program Files/Google/Chrome/Application/_ | 📁 use to launch Chrome on debugging mode |
+| `PORT` | _9222_ | 🔌port use to launch the new chrome window |
 
-> ⚠️ The `PORT` must not be used by another app. Launch `cmd` with admin rights and execute : `netstat -a` to see what port are used.
+> ⚠️ The `PORT` must __not be used by another app__. Launch `cmd` with admin rights and execute : `netstat -a` to see what port are used.
 
 > ⚠️ To get the `DIR_CHROMEAPP_PATH` :
 > ```
@@ -38,8 +38,9 @@ __You may need to change manually some stuff in some of the following files:__
 > 4. click on: Open File Location
 > 5. in the new window, right-click on `Google Chrome` shortcut file
 > 6. click on: Open File Location
-> 7. select the path of the newly opened folder
+> 7. copy paste the path of the newly opened folder into the `.env` file
 > ```
+> The __path should look like__ that : `C:/Files/Chrome/Application/`.
 
 Features
 ========
@@ -47,24 +48,60 @@ Templates
 ---------
 
 Templates are used to know what to scrape on what website. 
+ You can find in `example.json` an example of a set of rules and template information.
+ 
+ A template have 2 important parts:
+  1. The Template Specific Name
+  2. The Template List of Rules
+     - A. The Rule Guideline
+     - B. The Rule Saving Informations
+     - C. The Basic Rule (_optional_)
 
-### 📕 _How template work ?_
+<br>
 
-here is `example.json` where you can fin an example of a set of rules. The name of the `.json` is it important as it will be the string used to load it.
+### __1. Template specific Name__
+
+The __name__ of the template file : `name.json` is important as it will be the string used to load it.
+
+> ⚠️ If you want to scrap data on the website `https://www.scrap-me.com`, you will need to create a `scrap-me.json` file.
+
+<br>
+
+### __2. The Template List of Rules__
+
+You will find in the template a `"rules"` array that contain all the individual rule in some `{}` and separate by `,`.
+
+
+### _A. The Rule Guideline_
+
+A rule start with two values:
+  1. The __selector__ of the element to scrap
+  2. The __attribute__ of the element to scrap
+"csvSavedBeginWith": "LinkdinProfile", -> savedAs
+            "differenceInUrl": "/", -> urlSelector
+            rules -> pages
+            savedInfos -> rules
+
+### _B. The Rule Saving Informations_
+
+<ins>example.json :</ins>
 ```json
 {
     "rules": [
         {
-            this is the name use for the default saved csv
+            💬 this is the name use for the default saved csv
             "csvSavedBeginWith": "Name_for_my_csv",
-            this is a string that will be use to differentiate pages of a website
+            💬 this is a string that will be use to differentiate pages of a website
             "differenceInUrl": "/particular_path_in_url/",
-            this is the informations you want to save, you can add more then 4
+            💬 this is the informations you want to save, you can add more then 4
             "savedInfos": [
                 {
+                    💬 this is what the selenium will search for, here it's: class="companies"
                     "htmlTag": "class",
                     "value": "companies",
+                    💬 this is the name of the column in the csv
                     "saveAs": "Company Name",
+                    💬 this is the format of the saved information
                     "saveAsType": "string"
                 },
                 {
@@ -91,8 +128,7 @@ here is `example.json` where you can fin an example of a set of rules. The name 
 }
 ```
 
-### ❓ _How to ceate a template ?_
-
+```python
     if(html_type == "class"):
         return By.CLASS_NAME
     elif(html_type == "id"):
@@ -109,12 +145,13 @@ here is `example.json` where you can fin an example of a set of rules. The name 
         return By.CSS_SELECTOR
     elif(html_type == "xpath"):
         return By.XPATH
+```
 
-### ❗ _The basic rule_
+### _The basic rule_
 
-by using `"/"` as the selector to differentiate between the differents link of a website :
+by using `"/"` as the selector to differentiate between all the link of a same website :
 ```"differenceInUrl": "/",```
-you will create some rule for any page of the website, because every `url` have this char in it ... so **this is very important to put this rule at the bottom end of the list** so it will be the last one to be applied if any other rule match.
+you will create a set of rules that will work on any page of the website (because every `url` have the `/` charactère in it). This mean that __it's very important to put this rule at the bottom end of the list__ so it will be the last one to be applied if any other rule match.
 
 
 
@@ -141,6 +178,7 @@ How everything works together
 └───.gitignore
 ```
 
+----------------------------------------------------------------
 ## what have been done to launch projecte
 pip install all the requirements in requirements.txt
 
