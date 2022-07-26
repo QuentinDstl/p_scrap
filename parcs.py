@@ -132,10 +132,10 @@ def loadJSON(filename):
 
 
 def getConfigFromRule(json, url):
-    for rule in json["rules"]:
-        if rule["differenceInUrl"] in url:
-            return rule
-    raise Exception("No rule found for %s" % url.split("/", 3)[2])
+    for page in json["pages"]:
+        if page["urlSelector"] in url:
+            return page
+    raise Exception("No page found for %s" % url.split("/", 3)[2])
 
 
 def loadConfig(url):
@@ -170,13 +170,13 @@ def getByType(html_type):
 
 def getElements(driver, config):
     return tuple([driver.find_elements(by=getByType(
-        info["htmlTag"]), value=info["value"]) for info in config["savedInfos"]])
+        info["htmlTag"]), value=info["value"]) for info in config["rules"]])
 
 
 def modifyElement(config, elements_table, i, j):
-    if(config["savedInfos"][i]["saveAsType"] == "string"):
+    if(config["rules"][i]["saveType"] == "string"):
         return elements_table[i][j].text
-    elif(config["savedInfos"][i]["saveAsType"] == "link"):
+    elif(config["rules"][i]["saveType"] == "link"):
         return elements_table[i][j].get_attribute("href")
 
 
@@ -189,7 +189,7 @@ def getElement(error_textbox, config, elements_table, i, j):
 
 
 def createInformationDict(error_textbox, config, elements_table, j):
-    return {config["savedInfos"][i]["saveAs"]: getElement(error_textbox, config, elements_table, i, j) for i, _ in enumerate(config["savedInfos"])}
+    return {config["rules"][i]["saveAs"]: getElement(error_textbox, config, elements_table, i, j) for i, _ in enumerate(config["rules"])}
 
 
 def elementsToDataframe(error_textbox, config, elements_table):
@@ -271,7 +271,7 @@ class AsyncScraper(Thread):
         else:
             dataframe = getDataframe(driver, self.error_textbox, config)
             if(self.saving_name == ""):
-                self.saving_name = slugify(config["csvSavedBeginWith"]) + self.driver.current_url.split(
+                self.saving_name = slugify(config["fileName"]) + self.driver.current_url.split(
                     "/", 3)[3].replace("/", "%").replace("?", "@")
             if(SAVE_DATA_PATH == ""):
                 setDataPath()
