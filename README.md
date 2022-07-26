@@ -30,7 +30,7 @@ __You may need to change manually some stuff in some of the following files:__
 
 > ⚠️ The `PORT` must __not be used by another app__. Launch `cmd` with admin rights and execute : `netstat -a` to see what port are used.
 
-> ⚠️ To get the `DIR_CHROMEAPP_PATH` :
+> 📖 To get the `DIR_CHROMEAPP_PATH` :
 > ```
 > 1. Window + S: to start a research
 > 2. now search for `Chrome`
@@ -42,59 +42,77 @@ __You may need to change manually some stuff in some of the following files:__
 > ```
 > The __path should look like__ that : `C:/Files/Chrome/Application/`.
 
+------------------------------------------------------------
+
+<br>
+
 Features
 ========
 Templates
 ---------
 
-Templates are used to know what to scrape on what website. 
- You can find in `example.json` an example of a set of rules and template information.
+Templates are used to know what information to scrape on what website. 
+ You can find in `example.json` an example of a set of pages and rules.
  
  A template have 2 important parts:
   1. The Template Specific Name
-  2. The Template List of Rules
-     - A. The Rule Guideline
-     - B. The Rule Saving Informations
-     - C. The Basic Rule (_optional_)
+  2. The Template List of Pages
+     - A. The Page Guideline
+     - B. The Page Rules
+     - C. The Page Basic Rule (_optional_)
 
 <br>
 
-### __1. Template specific Name__
+### ___1. Template Specific Name___
 
 The __name__ of the template file : `name.json` is important as it will be the string used to load it.
 
-> ⚠️ If you want to scrap data on the website `https://www.scrap-me.com`, you will need to create a `scrap-me.json` file.
+> 📖 For exemple, if you want to scrap data on the website `https://www.scrap-me.com`, you will need to create a `scrap-me.json` template file.
 
 <br>
 
-### __2. The Template List of Rules__
+### ___2. The Template List of pages___
 
-You will find in the template a `"rules"` array that contain all the individual rule in some `{}` and separate by `,`.
+A website can have many diffent pages. For exemple `https://www.scrap-me.com` can have the following pages :
+- `https://www.scrap-me.com/profiles`
+- `https://www.scrap-me.com/companies`
 
+We can create different scrapping rules for each one of them or create a basic rule that will apply on every page.
 
-### _A. The Rule Guideline_
+You will find in the template a `"pages"` array that contain all the individual page in some `{}` and separate by `,`.
 
-A rule start with two values:
-  1. The __selector__ of the element to scrap
-  2. The __attribute__ of the element to scrap
-"csvSavedBeginWith": "LinkdinProfile", -> savedAs
-            "differenceInUrl": "/", -> urlSelector
-            rules -> pages
-            savedInfos -> rules
+<br>
 
-### _B. The Rule Saving Informations_
+### _A. The Page Guideline_
+
+Each page has the following two information :
+  1. The `fileName` which defines the default __name of the file__ that will be saved for this page of the web page.
+ 
+  2. The `urlSelector` wich defines the string in the url that will differentiate this page from the others.
+
+> 📖 For exemple, in the case of the page with the url :
+> 
+> `https://www.scrap-me.com/companies` , we can do :
+> ```json
+> "fileName": "ScrapMe_Companies",
+> "urlSelector": "/companies",
+> ```
+
+<br>
+
+### _B. The Page Rules_
 
 <ins>example.json :</ins>
 ```json
 {
-    "rules": [
+    "pages": [
         {
             💬 this is the name use for the default saved csv
-            "csvSavedBeginWith": "Name_for_my_csv",
+            "fileName": "Name_for_my_csv",
             💬 this is a string that will be use to differentiate pages of a website
-            "differenceInUrl": "/particular_path_in_url/",
+            "urlSelector": "/particular_path_in_url/",
             💬 this is the informations you want to save, you can add more then 4
-            "savedInfos": [
+            "rules": [
                 {
                     💬 this is what the selenium will search for, here it's: class="companies"
                     "htmlTag": "class",
@@ -102,25 +120,25 @@ A rule start with two values:
                     💬 this is the name of the column in the csv
                     "saveAs": "Company Name",
                     💬 this is the format of the saved information
-                    "saveAsType": "string"
+                    "saveType": "string"
                 },
                 {
                     "htmlTag": "id",
                     "value": "the-title-id",
                     "saveAs": "Title",
-                    "saveAsType": "string"
+                    "saveType": "string"
                 },
                 {
                     "htmlTag": "xpath",
                     "value": "//section/dl/dd[2]",
                     "saveAs": "Informations",
-                    "saveAsType": "string"
+                    "saveType": "string"
                 },
                 {
                     "htmlTag": "xpath",
                     "value": "//section/dl/dd[2]/a/span",
                     "saveAs": "Website",
-                    "saveAsType": "link"
+                    "saveType": "link"
                 }
             ]
         }
@@ -147,19 +165,26 @@ A rule start with two values:
         return By.XPATH
 ```
 
-### _The basic rule_
+<br>
+
+### _The Page Basic Rule_
 
 by using `"/"` as the selector to differentiate between all the link of a same website :
-```"differenceInUrl": "/",```
-you will create a set of rules that will work on any page of the website (because every `url` have the `/` charactère in it). This mean that __it's very important to put this rule at the bottom end of the list__ so it will be the last one to be applied if any other rule match.
+```"urlSelector": "/",```
+you will create a set of pages that will work on any page of the website (because every `url` have the `/` charactère in it). This mean that __it's very important to put this rule at the bottom end of the list__ so it will be the last one to be applied if any other rule match.
 
+------------------------------------------------------------
 
-
+<br>
 
 Error Message Box
 =================
 
+bla bla bla
 
+------------------------------------------------------------
+
+<br>
 
 How everything works together
 =============================
@@ -178,8 +203,9 @@ How everything works together
 └───.gitignore
 ```
 
-----------------------------------------------------------------
-## what have been done to launch projecte
+------------------------------------------------------------
+
+## what have been done to launch project
 pip install all the requirements in requirements.txt
 
 https://nuitka.net/doc/user-manual.html
