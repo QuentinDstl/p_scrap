@@ -13,12 +13,16 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # using tkinter to create the gui of the project
-from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, END
+from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, Entry, filedialog, END
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
+from configparser import ConfigParser
 from time import sleep
 from threading import Thread
+# slugify
+from unicodedata import normalize
+from re import sub
 
 load_dotenv()
 
@@ -35,8 +39,22 @@ ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
 # path to open explorer.exe
 FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 
-# tutorial message to show the user how to use the program
-TUTO_MESSAGE = "Go to a webpage\non the new opened\nbrowser. Click on\n'Save Data' to save\nthe lastest opened\ntab. If a related \ntemplate exist it will\nbe save, else add\nyourself a new one"
+CONFIG_PATH = OsJoin(ROOT_DIR, '.config')
+
+
+def load_config():
+    config = ConfigParser()
+    config.read(CONFIG_PATH)
+    return config
+
+
+def initConfig():
+    config = load_config()
+    global SAVE_DATA_PATH
+    if(config.sections() == []):  # if the config is not found
+        SAVE_DATA_PATH = ""
+    else:
+        SAVE_DATA_PATH = config["SAVING"]["SAVE_DATA_PATH"]
 
 
 def guiPrint(error_textbox, message):
@@ -184,11 +202,12 @@ def getDataframe(driver, error_textbox, config):
     return elementsToDataframe(error_textbox, config, elements)
 
 
-def saveDataframe(config, url, dataframe):
-    folder_path = OsJoin(
-        OsGetenv('SAVE_DATA_PATH'), config["csvSavedBeginWith"] + url.split("/", 3)[3].replace("/", "%").replace("?", "@") + ".csv")
-    dataframe.to_csv(folder_path, index=False)
-    return folder_path
+def saveDataframe(error_textbox, dataframe, saving_path):
+    try:
+        dataframe.to_csv(saving_path, index=False)
+    except ImportError as e:
+        guiPrint(error_textbox, "Name has special characters in it")
+    return saving_path
 
 
 def relativeToAssets(filename):
@@ -214,11 +233,35 @@ def toggleButtonSaving(button, saving, saving_image, base_image):
         button.config(image=base_image)
 
 
+def saveDataPathToConfig():
+    config = ConfigParser()
+    config["SAVING"] = {}
+    config["SAVING"]["SAVE_DATA_PATH"] = SAVE_DATA_PATH
+    with open(CONFIG_PATH, 'w') as configfile:
+        config.write(configfile)
+
+
+def setDataPath():
+    saving_path = filedialog.askdirectory(
+        initialdir=ROOT_DIR, title="Where to save ?")
+    global SAVE_DATA_PATH
+    SAVE_DATA_PATH = saving_path
+    saveDataPathToConfig()
+
+
+def slugify(text):
+    text = str(text)
+    text = normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+    text = sub(r'[^\w\s-]', '', text.lower())
+    return sub(r'[-\s]+', '-', text).strip('-_')
+
+
 class AsyncScraper(Thread):
-    def __init__(self, driver, error_textbox):
+    def __init__(self, driver, error_textbox, saving_name):
         super().__init__()
         self.driver = driver
         self.error_textbox = error_textbox
+        self.saving_name = slugify(saving_name)
 
     def run(self):
         try:
@@ -227,8 +270,15 @@ class AsyncScraper(Thread):
             guiPrint(self.error_textbox, e)
         else:
             dataframe = getDataframe(driver, self.error_textbox, config)
-            guiPrint(self.error_textbox, "Data saved: " +
-                     saveDataframe(config, driver.current_url, dataframe))
+            if(self.saving_name == ""):
+                self.saving_name = slugify(config["csvSavedBeginWith"]) + self.driver.current_url.split(
+                    "/", 3)[3].replace("/", "%").replace("?", "@")
+            if(SAVE_DATA_PATH == ""):
+                setDataPath()
+
+            saving_path = OsJoin(SAVE_DATA_PATH,  self.saving_name + ".csv")
+            guiPrint(self.error_textbox, "Data saved at: " +
+                     saveDataframe(self.error_textbox, dataframe, saving_path))
 
 
 class App(Tk):
@@ -236,15 +286,15 @@ class App(Tk):
         super().__init__()
 
         self.driver = driver
-        self.geometry("432x200")
+        self.geometry("282x240")
         self.iconbitmap(relativeToAssets("icon.ico"))
-        self.title('Pinaack Website Scraper')
+        self.title('Pinaack Webscraper')
         self.configure(bg="#FFFEFC")
         self.resizable(False, False)
 
         self.createBackground()
-        self.createTutoSideText()
         self.createSaveButton()
+        self.createPathSaveEntry()
         self.createSeeButton()
         self.createAddButton()
         self.createUiTerminal()
@@ -259,48 +309,30 @@ class App(Tk):
             self,
             bg="#FFFEFC",
             height=200,
-            width=432,
+            width=282,
             bd=0,
             highlightthickness=0,
             relief="ridge"
         )
-        self.canvas.place(x=0, y=0)
-        self.background_image = PhotoImage(
-            file=relativeToAssets("background.png"))
-        self.canvas.create_image(
-            75.0,
-            100.0,
-            image=self.background_image
-        )
-
-    def createTutoSideText(self):
-        self.canvas.create_text(
-            14.0,
-            8.0,
-            anchor="nw",
-            text="How to use it ?",
-            fill="#FFFEFC",
-            font=("Lato Bold", 15 * -1)
-        )
-        self.canvas.create_text(
-            14.0,
-            29.0,
-            anchor="nw",
-            text=TUTO_MESSAGE,
-            fill="#FFFEFC",
-            font=("Lato", 15 * -1)
+        self.canvas.place(
+            x=0,
+            y=0
         )
 
     def monitor(self, thread):
         if thread.is_alive():
             self.after(200, lambda: self.monitor(thread))
         else:
-            self.save_info.place(x=246.0, y=30.0)
+            self.save_info.place(
+                x=96.0,
+                y=30.0
+            )
             toggleButtonSaving(self.save_button, False,
                                self.saving_button_image, self.save_button_image)
 
     def getData(self):
-        scraper_thread = AsyncScraper(self.driver, self.error_textbox)
+        scraper_thread = AsyncScraper(
+            self.driver, self.error_textbox, self.save_to_entry.get())
         scraper_thread.start()
         self.monitor(scraper_thread)
 
@@ -326,7 +358,7 @@ class App(Tk):
             # relief="sunken"
         )
         self.save_button.place(
-            x=170.0,
+            x=20.0,
             y=20.0,
             width=242.0,
             height=40.0
@@ -339,8 +371,50 @@ class App(Tk):
             cursor="hand2",
             font=("Lato", 14 * -1)
         )
-        self.save_info.place(x=246.0, y=30.0)
+        self.save_info.place(
+            x=96.0,
+            y=30.0
+        )
         self.save_info.bind("<Button-1>", self.saveData)
+
+    def askSavingPath(self):
+        setDataPath()
+
+    def createPathSaveEntry(self):
+        self.save_as_entry_image = PhotoImage(
+            file=relativeToAssets("save_as_entry.png"))
+        self.save_as_bg = self.canvas.create_image(
+            122.0,
+            90.0,
+            image=self.save_as_entry_image
+        )
+        self.save_to_entry = Entry(
+            bd=0,
+            bg="#ECECEC",
+            highlightthickness=0
+        )
+        self.save_to_entry.place(
+            x=48.0,
+            y=81.0,
+            width=172.0,
+            height=18.0
+        )
+        self.save_in_button_image = PhotoImage(
+            file=relativeToAssets("save_in_button.png"))
+        self.save_in_button = Button(
+            image=self.save_in_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            cursor="hand2",
+            command=lambda: self.askSavingPath(),
+            relief="flat"
+        )
+        self.save_in_button.place(
+            x=224.0,
+            y=80.0,
+            width=38.0,
+            height=20.0
+        )
 
     def createSeeButton(self):
         self.see_button_image = PhotoImage(
@@ -354,8 +428,8 @@ class App(Tk):
             relief="flat"
         )
         self.see_button.place(
-            x=170.0,
-            y=74.0,
+            x=20.0,
+            y=114.0,
             width=113.0,
             height=20.0
         )
@@ -373,8 +447,8 @@ class App(Tk):
             relief="flat"
         )
         self.add_button.place(
-            x=303.0,
-            y=74.0,
+            x=153.0,
+            y=114.0,
             width=109.0,
             height=20.0
         )
@@ -387,13 +461,20 @@ class App(Tk):
             width=27, height=4,
             padx=4, pady=4,
         )
-        self.error_textbox.place(x=171.0, y=111.0)
+        self.error_textbox.place(
+            x=21.0,
+            y=151.0
+        )
         scrollbar = Scrollbar(
             self,
             orient='vertical',
             command=self.error_textbox.yview
         )
-        scrollbar.place(x=396.0, y=111.0, height=72.0)
+        scrollbar.place(
+            x=246.0,
+            y=151.0,
+            height=72.0
+        )
         self.error_textbox['yscrollcommand'] = scrollbar.set
         self.cls_button_image = PhotoImage(
             file=relativeToAssets("cls_button.png"))
@@ -406,8 +487,8 @@ class App(Tk):
             relief="flat"
         )
         self.cls_button.place(
-            x=376.0,
-            y=162.0,
+            x=226.0,
+            y=202.0,
             width=19.0,
             height=19.0
         )
@@ -434,6 +515,9 @@ class App(Tk):
 
 
 if __name__ == '__main__':
+    initConfig()
+    if(SAVE_DATA_PATH == ""):
+        setDataPath()
     initChromeWindow()
     driver = setDriver()
     app = App(driver)
