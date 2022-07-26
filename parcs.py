@@ -271,7 +271,7 @@ class AsyncScraper(Thread):
         else:
             dataframe = getDataframe(driver, self.error_textbox, config)
             if(self.saving_name == ""):
-                self.saving_name = config["csvSavedBeginWith"] + self.driver.current_url.split(
+                self.saving_name = slugify(config["csvSavedBeginWith"]) + self.driver.current_url.split(
                     "/", 3)[3].replace("/", "%").replace("?", "@")
             if(SAVE_DATA_PATH == ""):
                 setDataPath()
