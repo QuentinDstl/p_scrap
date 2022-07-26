@@ -86,9 +86,14 @@ You will find in the template a `"pages"` array that contain all the individual 
 ### _A. The Page Guideline_
 
 Each page has the following two information :
-  1. The `fileName` which defines the default __name of the file__ that will be saved for this page of the web page.
+  1. The `fileName` which defines the default __name of the file__ that will be saved for this page of the website.
  
-  2. The `urlSelector` wich defines the string in the url that will differentiate this page from the others.
+  2. The `urlSelector` wich defines the string in the url that will differentiate this page from the others for the same website.
+
+| variable name | type | description |
+|---|---|---|
+| `fileName` | _string_ | the default __name of the file__ that will be saved for this page of the website website |
+| `urlSelector` | _string_ | the __string__ in the url __that will differentiate this page__ from the others for the same website |
 
 > 📖 For exemple, in the case of the page with the url :
 > 
@@ -102,67 +107,52 @@ Each page has the following two information :
 
 ### _B. The Page Rules_
 
+The rules are defined in the `"rules"` array of rule.
+
+You can add as many rules as you want to save information on the web page.
+
+A rule allow you to define how you will select one data information that you want to save and under what form and what name you will save it.
+
+💬 this is what the selenium will search for, here it's: class="companies"
+💬 this is the name of the column in the csv
+💬 this is the format of the saved information
+
 <ins>example.json :</ins>
 ```json
-{
-    "pages": [
-        {
-            💬 this is the name use for the default saved csv
-            "fileName": "Name_for_my_csv",
-            💬 this is a string that will be use to differentiate pages of a website
-            "urlSelector": "/particular_path_in_url/",
-            💬 this is the informations you want to save, you can add more then 4
-            "rules": [
-                {
-                    💬 this is what the selenium will search for, here it's: class="companies"
-                    "htmlTag": "class",
-                    "value": "companies",
-                    💬 this is the name of the column in the csv
-                    "saveAs": "Company Name",
-                    💬 this is the format of the saved information
-                    "saveType": "string"
-                },
-                {
-                    "htmlTag": "id",
-                    "value": "the-title-id",
-                    "saveAs": "Title",
-                    "saveType": "string"
-                },
-                {
-                    "htmlTag": "xpath",
-                    "value": "//section/dl/dd[2]",
-                    "saveAs": "Informations",
-                    "saveType": "string"
-                },
-                {
-                    "htmlTag": "xpath",
-                    "value": "//section/dl/dd[2]/a/span",
-                    "saveAs": "Website",
-                    "saveType": "link"
-                }
-            ]
-        }
-    ]
-}
+"rules": [
+    {
+        "htmlTag": "class",
+        "value": "companies",
+        "saveAs": "Company Name",
+        "saveType": "string"
+    },
+    {
+        "htmlTag": "id",
+        "value": "the-title-id",
+        "saveAs": "Title",
+        "saveType": "string"
+    },
+    {
+        "htmlTag": "xpath",
+        "value": "//section/dl/dd[2]",
+        "saveAs": "Informations",
+        "saveType": "string"
+    },
+    {
+        "htmlTag": "xpath",
+        "value": "//section/dl/dd[2]/a/span",
+        "saveAs": "Website",
+        "saveType": "link"
+    }
+]
 ```
 
-```python
-    if(html_type == "class"):
-        return By.CLASS_NAME
-    elif(html_type == "id"):
-        return By.ID
-    elif(html_type == "tag"):
-        return By.TAG_NAME
-    elif(html_type == "name"):
-        return By.NAME
-    elif(html_type == "link"):
-        return By.LINK_TEXT
-    elif(html_type == "partialLink"):
-        return By.PARTIAL_LINK_TEXT
-    elif(html_type == "css"):
-        return By.CSS_SELECTOR
-    elif(html_type == "xpath"):
-        return By.XPATH
+```
+    class, id, tag, name, link, partialLink, css, xpath
+```
+
+```
+    string, link
 ```
 
 <br>
