@@ -90,7 +90,7 @@ Each page has the following two information :
  
   2. The `urlSelector` wich defines the string in the url that will differentiate this page from the others for the same website.
 
-| variable name | type | description |
+| variable | type | description |
 |---|---|---|
 | `fileName` | _string_ | the default __name of the file__ that will be saved for this page of the website website |
 | `urlSelector` | _string_ | the __string__ in the url __that will differentiate this page__ from the others for the same website |
