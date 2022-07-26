@@ -17,7 +17,7 @@ __You may need to change manually some stuff in some of the following files:__
 |---|---|---|
 | `[SAVING] SAVE_DATA_PATH` | _C:/Folder/To/Save/the_result.csv_ | 💾 where to save the current website |
 
-> ⚠️ If `.config` dont exist it will be created on next launch and you will be asked to chose it.
+> ⚠️ If `.config` doesn't exist, it will be created on next launch and you will be asked to choose it.
 
 
 .env file
@@ -25,20 +25,20 @@ __You may need to change manually some stuff in some of the following files:__
 
 | what is in `.env` |||
 |---|---|---|
-| `DIR_CHROMEAPP_PATH` | _C:/Program Files/Google/Chrome/Application/_ | 📁 use to launch Chrome on debugging mode |
-| `PORT` | _9222_ | 🔌port use to launch the new chrome window |
+| `DIR_CHROMEAPP_PATH` | _C:/Program Files/Google/Chrome/Application/_ | 📁 used to launch Chrome on debugging mode |
+| `PORT` | _9222_ | 🔌port used to launch the new chrome window |
 
 > ⚠️ The `PORT` must __not be used by another app__. Launch `cmd` with admin rights and execute : `netstat -a` to see what port are used.
 
 > 📖 To get the `DIR_CHROMEAPP_PATH` :
 > ```
 > 1. Window + S: to start a research
-> 2. now search for `Chrome`
-> 3. righ-click on the logo that just pop
-> 4. click on: Open File Location
-> 5. in the new window, right-click on `Google Chrome` shortcut file
-> 6. click on: Open File Location
-> 7. copy paste the path of the newly opened folder into the `.env` file
+> 2. Now search for `Chrome`
+> 3. Righ-click on the logo that just pops
+> 4. Click on: Open File Location
+> 5. In the new window, right-click on `Google Chrome` shortcut file
+> 6. Click on: Open File Location
+> 7. Copy, paste the path of the newly opened folder into the `.env` file
 > ```
 > The __path should look like__ that : `C:/Files/Chrome/Application/`.
 
@@ -54,12 +54,12 @@ Templates
 Templates are used to know what information to scrape on what website. 
  You can find in `example.json` an example of a set of pages and rules.
  
- A template have 2 important parts:
+ A template has 2 important parts:
   1. The Template Specific Name
   2. The Template List of Pages
-     - a. the page guideline
-     - b. the page rules
-     - c. the page basic rule (_optional_)
+     - a. The page guideline
+     - b. The page rules
+     - c. The page basic rule (_optional_)
 
 <br>
 
@@ -67,23 +67,23 @@ Templates are used to know what information to scrape on what website.
 
 The __name__ of the template file : `name.json` is important as it will be the string used to load it.
 
-> 📖 For exemple, if you want to scrap data on the website `https://www.scrap-me.com`, you will need to create a `scrap-me.json` template file.
+> 📖 For example, if you want to scrap data on the website `https://www.scrap-me.com`, you will need to create a `scrap-me.json` template file.
 
 <br>
 
 ### ___2. The Template List of pages___
 
-A website can have many diffent pages. For exemple `https://www.scrap-me.com` can have the following pages :
+A website can have many different pages. For example `https://www.scrap-me.com` can have the following pages :
 - `https://www.scrap-me.com/profiles`
 - `https://www.scrap-me.com/companies`
 
-We can create different scrapping rules for each one of them or create a basic rule that will apply on every page.
+We can create different scrapping rules for each one of them or create a basic rule that will apply to every page.
 
-You will find in the template a `"pages"` array that contain all the individual page in some `{}` and separate by `,`.
+You will find in the template a `"pages"` array that contains all the individual page in some `{}` and separate by `,`.
 
 <br>
 
-### ___a. the page guideline___
+### ___a. The page guideline___
 
 Each page has the following two information :
 
@@ -92,7 +92,7 @@ Each page has the following two information :
 | `fileName` | _string_ | the default __name of the file__ that will be saved for this page of the website website |
 | `urlSelector` | _string_ | the __string__ in the url __that will differentiate this page__ from the others for the same website |
 
-> 📖 For exemple, in the case of the page with the url :
+> 📖 For example, in the case of the page with the url :
 > 
 > `https://www.scrap-me.com/companies` , we can do :
 > ```json
@@ -102,25 +102,25 @@ Each page has the following two information :
 
 <br>
 
-### ___b. the page rules___
+### ___b. The page rules___
 
 The rules are defined in the `"rules"` array of rule.
 
-A rule allow you to define how you will select one data information that you want to save and under what form and what name you will save it.
+A rule allows you to define how you will select one data information that you want to save and under what form and what name you will save it.
 
 > 📖 You can add as many rules as you want to save information on the web page.
 
-A rule have the following information :
+A rule has the following information :
 
 | variable | type | description |
 |---|---|---|
 | `htmlTag` | _string_ | a [html tag](#html-tags) that the selenium will search for |
-| `value` | _string_ | the value of the data that the html tag have |
-| `saveAs` | _string_ | the name of the column for this information in the csv |
-| `saveType` | _string_ | the [saving type](#saving-types) that will define format of the data |
+| `value` | _string_ | the value of the data that the html tag has |
+| `saveAs` | _string_ | the name of the column for this information in the CSV |
+| `saveType` | _string_ | the [saving type](#saving-types) that will define the data format |
 
 
-> 📖 For exemple, in the case of the following html tag :
+> 📖 For example, in the case of the following html tag :
 > ```html
 > <p class="company-title"> Super Company Name </p>
 > ```
@@ -168,7 +168,7 @@ A rule have the following information :
     > ```
     > the rule `value` will here be `h1`
 
-    > ⚠️ Only the __first corresponding tag__ will be save !
+    > ⚠️ Only the __first corresponding tag__ will be saved !
 - name
     > ```html
     > <input name="username" type="text" />
@@ -200,7 +200,7 @@ A rule have the following information :
     > ```
     > the rule `value` will here be `//div[@class='name']/p`
 
-    > [🚩 Get more Informations on Xpath](https://www.geeksforgeeks.org/introduction-to-xpath/) or [Use Xpath Extension](https://chrome.google.com/webstore/detail/xpath-finder/ihnknokegkbpmofmafnkoadfjkhlogph?hl=en)
+    > [🚩 Get more Information on Xpath](https://www.geeksforgeeks.org/introduction-to-xpath/) or [Use Xpath Extension](https://chrome.google.com/webstore/detail/xpath-finder/ihnknokegkbpmofmafnkoadfjkhlogph?hl=en)
 
 
 #### saving types:
@@ -213,15 +213,15 @@ A rule have the following information :
 
 <br>
 
-### ___c. the page basic rule___
+### ___c. The page basic rule___
 
-by using `"/"` or `""` as the `urlSelector` you will create a __page basic rule__. 
+By using `"/"` or `""` as the `urlSelector` you will create a __page basic rule__. 
 
-This mean that the following scrapping rule will apply on every page of the website. This will happen because every `url` have the `/` character in it. 
+This means that the following scrapping rule will apply to every page of the website. This will happen because every `url` has the `/` character in it. 
 
-> ⚠️ This rule have to be __at the bottom end of the list of pages__ so it will be the last one to be applied if any other page match the previous url selector.
+> ⚠️ This rule has to be __at the bottom end of the list of pages__ so it will be the last one to be applied if any other page matches the previous url selector.
 
-You can use this selector so if some website dont use any specific string in the url for the page you want to scrap (if they use _random token_ or _user id string_), you can use it.
+You can use this selector so if some website doesn't use any specific string in the url for the page you want to scrap (if they use _random token_ or _user id string_), you can use it.
 
 ------------------------------------------------------------
 
@@ -230,7 +230,18 @@ You can use this selector so if some website dont use any specific string in the
 Error Messages
 =================
 
-bla bla bla
+Critical Errors
+---------------
+
+> 📖 Critical errors will appear in a popup error window.
+
+Here are the known errors and their solutions :
+
+
+Warnings
+--------
+
+> 📖 Warnings will appear in the application console.
 
 ------------------------------------------------------------
 
@@ -247,15 +258,19 @@ How everything works together
 │   │   └── ... # all stuff from Google are there
 │   └── chromedriver.exe
 ├── templates
-│   └── ...     # templates for scraping data from website
+│   └── ...     # templates for scraping data from a website
 ├── .config     # file with user configuration 
 ├── .env        # file with general configuration
-└───.gitignore
+├── .gitignore  # file with all the ignored files in git
+├── scrap.exe   # file with the compiled main program
+├── scrap.py    # file with the main program
+├── README.md   # file with general information
+└── requirements.txt # file with all the dependencies
 ```
 
 ------------------------------------------------------------
 
-## what have been done to launch project
+## what have been done to launch the project
 pip install all the requirements in requirements.txt
 
 https://nuitka.net/doc/user-manual.html
@@ -266,7 +281,3 @@ use pypy3
 use numpy for matrix and use jit on top of it
 
 http://sdz.tdct.org/sdz/creer-une-installation.html
-
-## TODO V1
-raise toutes les erreurs possible
-do all the test to see if everything is secured and 
