@@ -57,9 +57,9 @@ Templates are used to know what information to scrape on what website.
  A template have 2 important parts:
   1. The Template Specific Name
   2. The Template List of Pages
-     - A. The Page Guideline
-     - B. The Page Rules
-     - C. The Page Basic Rule (_optional_)
+     - a. the page guideline
+     - b. the page rules
+     - c. the page basic rule (_optional_)
 
 <br>
 
@@ -83,12 +83,9 @@ You will find in the template a `"pages"` array that contain all the individual 
 
 <br>
 
-### _A. The Page Guideline_
+### ___a. the page guideline___
 
 Each page has the following two information :
-  1. The `fileName` which defines the default __name of the file__ that will be saved for this page of the website.
- 
-  2. The `urlSelector` wich defines the string in the url that will differentiate this page from the others for the same website.
 
 | variable | type | description |
 |---|---|---|
@@ -105,69 +102,132 @@ Each page has the following two information :
 
 <br>
 
-### _B. The Page Rules_
+### ___b. the page rules___
 
 The rules are defined in the `"rules"` array of rule.
 
-You can add as many rules as you want to save information on the web page.
-
 A rule allow you to define how you will select one data information that you want to save and under what form and what name you will save it.
 
-💬 this is what the selenium will search for, here it's: class="companies"
-💬 this is the name of the column in the csv
-💬 this is the format of the saved information
+> 📖 You can add as many rules as you want to save information on the web page.
 
-<ins>example.json :</ins>
-```json
-"rules": [
-    {
-        "htmlTag": "class",
-        "value": "companies",
-        "saveAs": "Company Name",
-        "saveType": "string"
-    },
-    {
-        "htmlTag": "id",
-        "value": "the-title-id",
-        "saveAs": "Title",
-        "saveType": "string"
-    },
-    {
-        "htmlTag": "xpath",
-        "value": "//section/dl/dd[2]",
-        "saveAs": "Informations",
-        "saveType": "string"
-    },
-    {
-        "htmlTag": "xpath",
-        "value": "//section/dl/dd[2]/a/span",
-        "saveAs": "Website",
-        "saveType": "link"
-    }
-]
-```
+A rule have the following information :
 
-```
-    class, id, tag, name, link, partialLink, css, xpath
-```
+| variable | type | description |
+|---|---|---|
+| `htmlTag` | _string_ | a [html tag](#html-tags) that the selenium will search for |
+| `value` | _string_ | the value of the data that the html tag have |
+| `saveAs` | _string_ | the name of the column for this information in the csv |
+| `saveType` | _string_ | the [saving type](#saving-types) that will define format of the data |
 
-```
-    string, link
-```
+
+> 📖 For exemple, in the case of the following html tag :
+> ```html
+> <p class="company-title"> Super Company Name </p>
+> ```
+> We can create the following rule :
+> ```json
+>    {
+>        "htmlTag": "class",
+>        "value": "company-title",
+>        "saveAs": "Company Name",
+>        "saveType": "string"
+>    }
+> ```
+
+> 📖 In the case of the following html tag with a link :
+> ```html
+> <a href="https://www.scrap-me.com/"> Our Website </a>
+> ```
+> We can create the following rule :
+> ```json
+>    {
+>        "htmlTag": "link",
+>        "value": "Our Website",
+>        "saveAs": "Company Link",
+>        "saveType": "link"
+>    }
+> ```
+
+#### html tags:
+
+- class :
+    > ```html
+    > <div class="text container company">...</div>
+    > ```
+    > the rule `value` could here be `company` or `text`
+
+    > ⚠️ Only __one__ class can be passed !
+- id
+    > ```html
+    > <div id="company-name"> Company Name </div>
+    > ```
+    > the rule `value` will here be `company-name`
+- tag
+    > ```html
+    > <h1> Company Name </h1>
+    > ```
+    > the rule `value` will here be `h1`
+
+    > ⚠️ Only the __first corresponding tag__ will be save !
+- name
+    > ```html
+    > <input name="username" type="text" />
+    > ```
+    > the rule `value` will here be `username`
+- link
+    > ```html
+    > <a href="https://scrap-me.com/"> A Link </a>
+    > ```
+    > the rule `value` will here be `A Link`
+- partialLink
+    > ```html
+    > <a href="https://scrap-me.com/"> A Link </a>
+    > ```
+    > the rule `value` could here be `link` or `A Li`
+- css
+    > 📖 a very flexible html tag selector :
+    > ```html
+    > <p> Welcome on </p><p> Scrap-Me </p><p> ! </p>
+    > ```
+    > the rule `value` will here be `p.content:nth-child(2)` to select the _Scrap-Me_
+- xpath
+    > 📖 the most flexible html tag selector :
+    > ```html
+    > <div class="informations">
+    >     <img src="https://img.png" alt="logo" />
+    >     <p> Company Name </p>
+    > </div>
+    > ```
+    > the rule `value` will here be `//div[@class='name']/p`
+
+    > [🚩 Get more Informations on Xpath](https://www.geeksforgeeks.org/introduction-to-xpath/) or [Use Xpath Extension](https://chrome.google.com/webstore/detail/xpath-finder/ihnknokegkbpmofmafnkoadfjkhlogph?hl=en)
+
+
+#### saving types:
+
+- string
+    > to save any type of data
+- link
+    > to save link data from href tag
+
 
 <br>
 
-### _The Page Basic Rule_
+### ___c. the page basic rule___
 
-by using `"/"` as the selector to differentiate between all the link of a same website :
-```"urlSelector": "/",```
-you will create a set of pages that will work on any page of the website (because every `url` have the `/` charactère in it). This mean that __it's very important to put this rule at the bottom end of the list__ so it will be the last one to be applied if any other rule match.
+by using `"/"` or `""` as the `urlSelector` you will create a __page basic rule__. 
+
+This mean that the following scrapping rule will apply on every page of the website. This will happen because every `url` have the `/` character in it. 
+
+> ⚠️ This rule have to be __at the bottom end of the list of pages__ so it will be the last one to be applied if any other page match the previous url selector.
+
+You can use this selector so if some website dont use any specific string in the url for the page you want to scrap (if they use _random token_ or _user id string_), you can use it.
 
 ------------------------------------------------------------
 
 <br>
 
-Error Message Box
+Error Messages
 =================
 
 bla bla bla
