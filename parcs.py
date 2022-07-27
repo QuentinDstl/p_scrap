@@ -85,7 +85,7 @@ def initChromeWindow():
         sleep(1)
         prog_start.kill()
     except Exception as e:
-        messagebox.showerror("Chrome Error", str(e))
+        messagebox.showerror("Chrome Error", "[#10]" + str(e))
 
 
 """
@@ -102,9 +102,9 @@ def setDriver():
         driver = webdriver.Chrome(
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
-        messagebox.showerror("Driver Error", str(e))
+        messagebox.showerror("Driver Error", "[#11]"+ str(e))
         messagebox.showinfo(
-            "Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of the chromedriver and replace it in the 'driver' folder as 'chromedriver.exe'")
+            "Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of chromedriver and replace the previous 'chromedriver.exe' in the 'driver' folder")
     return driver
 
 
@@ -135,7 +135,7 @@ def getConfigFromRule(json, url):
     for page in json["pages"]:
         if page["urlSelector"] in url:
             return page
-    raise Exception("No page found for %s" % url.split("/", 3)[2])
+    raise Exception("[#22] No page found for %s" % url.split("/", 3)[2])
 
 
 def loadConfig(url):
@@ -144,7 +144,7 @@ def loadConfig(url):
         json = loadJSON(filename)
         return getConfigFromRule(json, url)
     else:
-        raise Exception("Config not found for this %s" % url.split("/", 3)[2])
+        raise Exception("[#23] Config not found for this %s" % url.split("/", 3)[2])
 
 
 def getByType(html_type):
@@ -165,7 +165,7 @@ def getByType(html_type):
     elif(html_type == "xpath"):
         return By.XPATH
     else:
-        raise Exception("Unknown html type")
+        raise Exception("[#24] Unknown html tag type %s" % html_type)
 
 
 def getElements(driver, config):
@@ -184,7 +184,7 @@ def getElement(error_textbox, config, elements_table, i, j):
     try:
         return modifyElement(config, elements_table, i, j)
     except IndexError as e:
-        guiPrint(error_textbox, ": Cant load element, check the missing information in the '.csv' file in 'data' folder and change the field 'value' corresponding in the '.json' file in the 'templates' folder ")
+        guiPrint(error_textbox, "[#20] Cant load element, check the missing information in the '.csv' saved file and change the field 'value' or 'htmlTag' corresponding in the same template file")
         pass
 
 
@@ -206,7 +206,7 @@ def saveDataframe(error_textbox, dataframe, saving_path):
     try:
         dataframe.to_csv(saving_path, index=False)
     except ImportError as e:
-        guiPrint(error_textbox, "Name has special characters in it")
+        guiPrint(error_textbox, "[#21] Name has special characters in it")
     return saving_path
 
 

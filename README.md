@@ -15,7 +15,7 @@ __You may need to change manually some stuff in some of the following files:__
 
 | what is in `.config` |||
 |---|---|---|
-| `[SAVING] SAVE_DATA_PATH` | _C:/Folder/To/Save/the_result.csv_ | 💾 where to save the current website |
+| `[SAVING] SAVE_DATA_PATH` | _C:/Folder/To/Save/the_result.csv_ | folder where the current website will be saved |
 
 > ⚠️ If `.config` doesn't exist, it will be created on next launch and you will be asked to choose it.
 
@@ -25,8 +25,8 @@ __You may need to change manually some stuff in some of the following files:__
 
 | what is in `.env` |||
 |---|---|---|
-| `DIR_CHROMEAPP_PATH` | _C:/Program Files/Google/Chrome/Application/_ | 📁 used to launch Chrome on debugging mode |
-| `PORT` | _9222_ | 🔌port used to launch the new chrome window |
+| `DIR_CHROMEAPP_PATH` | _C:/Program Files/Google/Chrome/Application/_ | default folder used to launch Chrome on debugging mode |
+| `PORT` | _9222_ | default port used to launch the new chrome window |
 
 > ⚠️ The `PORT` must __not be used by another app__. Launch `cmd` with admin rights and execute : `netstat -a` to see what port are used.
 
@@ -235,13 +235,24 @@ Critical Errors
 
 > 📖 Critical errors will appear in a popup error window.
 
-Here are the known errors and their solutions :
-
+| Id | Description | Solution |
+|---|---|---|
+| `#10` | Can't execute the terminal commands to set chrome.exe path or to open a chrome debugging instance | Try to launch it manually in your terminal by running [this command](#openning-chrome-debugging-instance) and see if it work |
+| `#11` | The selenium driver don't work | Download the [latest version of chromedriver](https://chromedriver.storage.googleapis.com/index.html) and replace the previous `chromedriver.exe` in the `driver` folder |
 
 Warnings
 --------
 
 > 📖 Warnings will appear in the application console.
+
+| Id | Description | Solution |
+|---|---|---|
+| `#20` | One of the [rules](#b-the-page-rules) is not working properly | Check the missing information in the `.csv` saved file and change the field `value` or `htmlTag` corresponding in the same template file |
+| `#21` | Name has special characters in it | The name given to the csv file have special characters please only use letters, numbers and `-` or `_` |
+| `#22` | Loading templates error | The templates is not founded  |
+| `#23` | Loading templates error | The templates is not founded  |
+| `#24` | The `htmlTag` in one of the rule of the template is not one of the [html tag](#html-tags) | Open the template file of the website you where trying to save and search for the corresponding tag-name that was prompt in console |
+
 
 ------------------------------------------------------------
 
@@ -267,6 +278,22 @@ How everything works together
 ├── README.md   # file with general information
 └── requirements.txt # file with all the dependencies
 ```
+Openning Chrome Debugging Instance
+----------------------------------
+
+We are using python `Popen` to execute a child program in a new process. We then wait for the execution and then kill the subprocess.
+
+The child program will :
+  1. Set the chrome driver path
+  2. Open a new chrome window with a the debugging mode
+
+You can manually execute the child program by running the following command in your terminal after changing the `DIR_CHROMEAPP_PATH` and the `PORT` values :
+
+```bash
+set PATH=%PATH%;DIR_CHROMEAPP_PATH&&chrome.exe --remote-debugging-port=PORT --user-data-dir="C:\TestFolder\ChromeScraperProfile"
+```
+
+> 📖 look here to see what [path and port values](#env-file) you need to set to make it work for you
 
 ------------------------------------------------------------
 
@@ -281,3 +308,10 @@ use pypy3
 use numpy for matrix and use jit on top of it
 
 http://sdz.tdct.org/sdz/creer-une-installation.html
+
+
+refacto :
+
+code : config -> template
+        rule -> page
+        saveAs -> rule
