@@ -297,16 +297,26 @@ set PATH=%PATH%;DIR_CHROMEAPP_PATH&&chrome.exe --remote-debugging-port=PORT --us
 
 > 📖 look here to see what [path and port values](#env-file) you need to set to make it work for you
 
+Converting the .py to .exe
+---------------------------
+
+You can use 
+[nuikta](https://nuitka.net/doc/user-manual.html) to do it by running the following command in your terminal :   
+```bash
+nuitka --standalone scrap.py
+```
+
 ------------------------------------------------------------
 
-## what have been done to launch the project
-pip install all the requirements in requirements.txt
+<br>
 
-https://nuitka.net/doc/user-manual.html
+TODO for the V2
+===============
 
-## TODO V2
-SPEED :
-use pypy3
-use numpy for matrix and use jit on top of it
+Work on some Speed improvements
+-------------------------------
+
+- use pypy3
+- use numpy for matrix and use jit on top of it
 
 http://sdz.tdct.org/sdz/creer-une-installation.html
