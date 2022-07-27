@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 # CSV saver
 from pandas import DataFrame
-# for charging the config
+# for charging the template
 from json import loads as JsonLoads
 # charge the templates and see templates files
 from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
@@ -42,14 +42,14 @@ FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
 CONFIG_PATH = OsJoin(ROOT_DIR, '.config')
 
 
-def load_config():
+def loadConfig():
     config = ConfigParser()
     config.read(CONFIG_PATH)
     return config
 
 
 def initConfig():
-    config = load_config()
+    config = loadConfig()
     global SAVE_DATA_PATH
     if(config.sections() == []):  # if the config is not found
         SAVE_DATA_PATH = ""
@@ -118,7 +118,7 @@ def getFiles(folder_path):
 # into file because whe could use the fact that file are
 # ordered but its more flexible because if the url name is
 # app.something.net it wont be found
-def isInConfigs(url):
+def isInTemplates(url):
     for filename in getFiles(DIR_TEMPLATES_PATH):
         short_filename = filename.split(".")[0]
         if short_filename in url:
@@ -131,20 +131,20 @@ def loadJSON(filename):
         return JsonLoads(json_file.read())
 
 
-def getConfigFromRule(json, url):
+def getPageRules(json, url):
     for page in json["pages"]:
         if page["urlSelector"] in url:
             return page
     raise Exception("[#22] No page found for %s" % url.split("/", 3)[2])
 
 
-def loadConfig(url):
-    filename = isInConfigs(url)
+def loadTeamplate(url):
+    filename = isInTemplates(url)
     if(filename):
         json = loadJSON(filename)
-        return getConfigFromRule(json, url)
+        return getPageRules(json, url)
     else:
-        raise Exception("[#23] Config not found for this %s" % url.split("/", 3)[2])
+        raise Exception("[#23] Template not found for this %s" % url.split("/", 3)[2])
 
 
 def getByType(html_type):
@@ -168,38 +168,38 @@ def getByType(html_type):
         raise Exception("[#24] Unknown html tag type %s" % html_type)
 
 
-def getElements(driver, config):
+def getElements(driver, template):
     return tuple([driver.find_elements(by=getByType(
-        info["htmlTag"]), value=info["value"]) for info in config["rules"]])
+        info["htmlTag"]), value=info["value"]) for info in template["rules"]])
 
 
-def modifyElement(config, elements_table, i, j):
-    if(config["rules"][i]["saveType"] == "string"):
+def modifyElement(template, elements_table, i, j):
+    if(template["rules"][i]["saveType"] == "string"):
         return elements_table[i][j].text
-    elif(config["rules"][i]["saveType"] == "link"):
+    elif(template["rules"][i]["saveType"] == "link"):
         return elements_table[i][j].get_attribute("href")
 
 
-def getElement(error_textbox, config, elements_table, i, j):
+def getElement(error_textbox, template, elements_table, i, j):
     try:
-        return modifyElement(config, elements_table, i, j)
+        return modifyElement(template, elements_table, i, j)
     except IndexError as e:
         guiPrint(error_textbox, "[#20] Cant load element, check the missing information in the '.csv' saved file and change the field 'value' or 'htmlTag' corresponding in the same template file")
         pass
 
 
-def createInformationDict(error_textbox, config, elements_table, j):
-    return {config["rules"][i]["saveAs"]: getElement(error_textbox, config, elements_table, i, j) for i, _ in enumerate(config["rules"])}
+def createInformationDict(error_textbox, template, elements_table, j):
+    return {template["rules"][i]["saveAs"]: getElement(error_textbox, template, elements_table, i, j) for i, _ in enumerate(template["rules"])}
 
 
-def elementsToDataframe(error_textbox, config, elements_table):
-    return DataFrame().from_records([createInformationDict(error_textbox, config, elements_table, j)
+def elementsToDataframe(error_textbox, template, elements_table):
+    return DataFrame().from_records([createInformationDict(error_textbox, template, elements_table, j)
                                      for j, _ in enumerate(elements_table[0])])
 
 
-def getDataframe(driver, error_textbox, config):
-    elements = getElements(driver, config)
-    return elementsToDataframe(error_textbox, config, elements)
+def getDataframe(driver, error_textbox, template):
+    elements = getElements(driver, template)
+    return elementsToDataframe(error_textbox, template, elements)
 
 
 def saveDataframe(error_textbox, dataframe, saving_path):
@@ -265,13 +265,13 @@ class AsyncScraper(Thread):
 
     def run(self):
         try:
-            config = loadConfig(driver.current_url)
+            template = loadTeamplate(driver.current_url)
         except Exception as e:
             guiPrint(self.error_textbox, e)
         else:
-            dataframe = getDataframe(driver, self.error_textbox, config)
+            dataframe = getDataframe(driver, self.error_textbox, template)
             if(self.saving_name == ""):
-                self.saving_name = slugify(config["fileName"]) + self.driver.current_url.split(
+                self.saving_name = slugify(template["fileName"]) + self.driver.current_url.split(
                     "/", 3)[3].replace("/", "%").replace("?", "@")
             if(SAVE_DATA_PATH == ""):
                 setDataPath()
