@@ -272,11 +272,11 @@ How everything works together
 │   └── chromedriver.exe
 ├── templates
 │   └── ...     # templates for scraping data from a website
-├── .config     # file with user configuration 
-├── .env        # file with general configuration
-├── .gitignore  # file with all the ignored files in git
-├── scrap.exe   # file with the compiled main program
-├── scrap.py    # file with the main program
+├── .config     # file with general configuration 
+├── .env        # file with user configuration
+├── .gitignore  # file with all the ignored files for git
+├── webscraper.exe   # file with the compiled main program
+├── webscraper.py    # file with the main program
 ├── README.md   # file with general information
 └── requirements.txt # file with all the dependencies
 ```
@@ -303,7 +303,7 @@ Converting the .py to .exe
 You can use 
 [nuikta](https://nuitka.net/doc/user-manual.html) to do it by running the following command in your terminal :   
 ```bash
-nuitka --standalone scrap.py
+python -m nuitka --standalone webscraper.py
 ```
 
 ------------------------------------------------------------
