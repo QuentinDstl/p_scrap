@@ -53,6 +53,7 @@ def initConfig():
     global SAVE_DATA_PATH
     if(config.sections() == []):  # if the config is not found
         SAVE_DATA_PATH = ""
+        setDataPath()
     else:
         SAVE_DATA_PATH = config["SAVING"]["SAVE_DATA_PATH"]
 
@@ -102,7 +103,7 @@ def setDriver():
         driver = webdriver.Chrome(
             options=options, service=Service(DRIVER_PATH))
     except WebDriverException as e:
-        messagebox.showerror("Driver Error", "[#11]"+ str(e))
+        messagebox.showerror("Driver Error", "[#11]" + str(e))
         messagebox.showinfo(
             "Driver Solution", "Download on 'https://chromedriver.storage.googleapis.com/index.html' the latest version of chromedriver and replace the previous 'chromedriver.exe' in the 'driver' folder")
     return driver
@@ -144,7 +145,8 @@ def loadTeamplate(url):
         json = loadJSON(filename)
         return getPageRules(json, url)
     else:
-        raise Exception("[#23] Template not found for this %s" % url.split("/", 3)[2])
+        raise Exception("[#23] Template not found for this %s" %
+                        url.split("/", 3)[2])
 
 
 def getByType(html_type):
@@ -245,8 +247,11 @@ def setDataPath():
     saving_path = filedialog.askdirectory(
         initialdir=ROOT_DIR, title="Where to save ?")
     global SAVE_DATA_PATH
-    SAVE_DATA_PATH = saving_path
-    saveDataPathToConfig()
+    if(saving_path != ""):
+        SAVE_DATA_PATH = saving_path
+        saveDataPathToConfig()
+    elif(saving_path == "" and SAVE_DATA_PATH == ""):
+        setDataPath()
 
 
 def slugify(text):
@@ -443,7 +448,7 @@ class App(Tk):
             highlightthickness=0,
             cursor="hand2",
             command=lambda: guiPrint(
-                self.error_textbox, "This function is not working for the moment"),
+                self.error_textbox, "This function is not working for the moment, Please check README.md to see how to add a new template"),
             relief="flat"
         )
         self.add_button.place(
@@ -516,8 +521,6 @@ class App(Tk):
 
 if __name__ == '__main__':
     initConfig()
-    if(SAVE_DATA_PATH == ""):
-        setDataPath()
     initChromeWindow()
     driver = setDriver()
     app = App(driver)
