@@ -311,7 +311,5 @@ http://sdz.tdct.org/sdz/creer-une-installation.html
 
 
 refacto :
-
-code : config -> template
         rule -> page
         saveAs -> rule
