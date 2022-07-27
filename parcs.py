@@ -13,7 +13,7 @@ from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # using tkinter to create the gui of the project
-from tkinter import Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, Entry, filedialog, END
+from tkinter import TclError, Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, Entry, filedialog, END
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
@@ -82,7 +82,7 @@ def initChromeWindow():
     # ---> for --user-data-dir flag you need to pass a directory where a new Chrome profile will be created
     if OsGetenv('DIR_CHROMEAPP_PATH') == None or OsGetenv('PORT') == None:
         messagebox.showerror(".env Error", "[#1] .env file not found in the project root or empty, Please see the README.md file for solution")
-        exit()
+        exit(1)
 
     try:
         prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
@@ -224,6 +224,7 @@ def setDriverToLast(driver):
     try:
         driver.switch_to.window(window_name=driver.window_handles[-1])
     except WebDriverException:
+        messagebox.showerror("Driver Error", "[#12] WebdriverException: No window found")
         exit(1)
     return driver
 
@@ -296,7 +297,11 @@ class App(Tk):
 
         self.driver = driver
         self.geometry("282x240")
-        self.iconbitmap(relativeToAssets("icon.ico"))
+        try: self.iconbitmap(relativeToAssets("icon.ico")) 
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'icon.ico' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.title('Pinaack Webscraper')
         self.configure(bg="#FFFEFC")
         self.resizable(False, False)
@@ -352,10 +357,15 @@ class App(Tk):
         self.getData()
 
     def createSaveButton(self):
-        self.saving_button_image = PhotoImage(
-            file=relativeToAssets("saving_button.png"))
-        self.save_button_image = PhotoImage(
-            file=relativeToAssets("save_button.png"))
+        try:
+            self.saving_button_image = PhotoImage(
+                file=relativeToAssets("saving_button.png"))
+            self.save_button_image = PhotoImage(
+                file=relativeToAssets("save_button.png")) 
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'saving_button.png' or 'save_button.png' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.save_button = Button(
             image=self.save_button_image,
             borderwidth=0,
@@ -390,8 +400,12 @@ class App(Tk):
         setDataPath()
 
     def createPathSaveEntry(self):
-        self.save_as_entry_image = PhotoImage(
-            file=relativeToAssets("save_as_entry.png"))
+        try: self.save_as_entry_image = PhotoImage(
+                file=relativeToAssets("save_as_entry.png"))
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'save_as_entry.png' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.save_as_bg = self.canvas.create_image(
             122.0,
             90.0,
@@ -408,8 +422,12 @@ class App(Tk):
             width=172.0,
             height=18.0
         )
-        self.save_in_button_image = PhotoImage(
-            file=relativeToAssets("save_in_button.png"))
+        try: self.save_in_button_image = PhotoImage(
+                file=relativeToAssets("save_in_button.png"))
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'save_in_button.png' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.save_in_button = Button(
             image=self.save_in_button_image,
             borderwidth=0,
@@ -426,8 +444,12 @@ class App(Tk):
         )
 
     def createSeeButton(self):
-        self.see_button_image = PhotoImage(
-            file=relativeToAssets("see_button.png"))
+        try: self.see_button_image = PhotoImage(
+                file=relativeToAssets("see_button.png"))
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'see_button.png' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.see_button = Button(
             image=self.see_button_image,
             borderwidth=0,
@@ -444,8 +466,12 @@ class App(Tk):
         )
 
     def createAddButton(self):
-        self.add_button_image = PhotoImage(
-            file=relativeToAssets("add_button.png"))
+        try: self.add_button_image = PhotoImage(
+                file=relativeToAssets("add_button.png"))
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'add_button.png' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.add_button = Button(
             image=self.add_button_image,
             borderwidth=0,
@@ -485,8 +511,12 @@ class App(Tk):
             height=72.0
         )
         self.error_textbox['yscrollcommand'] = scrollbar.set
-        self.cls_button_image = PhotoImage(
-            file=relativeToAssets("cls_button.png"))
+        try: self.cls_button_image = PhotoImage(
+                file=relativeToAssets("cls_button.png"))
+        except TclError: 
+            messagebox.showerror("Missing Asset", "[#2] 'cls_button.png' not found in 'assets' folder")
+            self.onClosing()
+            exit(1)
         self.cls_button = Button(
             image=self.cls_button_image,
             borderwidth=0,
