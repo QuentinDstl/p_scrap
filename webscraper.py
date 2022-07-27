@@ -8,12 +8,14 @@ from pandas import DataFrame
 # for charging the template
 from json import loads as JsonLoads
 # charge the templates and see templates files
-from os.path import dirname as OsDirname, abspath as Osabspath, join as OsJoin, isfile as OsIsfile
+from os.path import (dirname as OsDirname, abspath as Osabspath,
+                     join as OsJoin, isfile as OsIsfile)
 from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
 # using tkinter to create the gui of the project
-from tkinter import TclError, Tk, Canvas, Text, Label, Button, PhotoImage, messagebox, Entry, filedialog, END
+from tkinter import (TclError, Tk, Canvas, Text, Label, Button, PhotoImage,
+                     messagebox, Entry, filedialog, END)
 from tkinter.ttk import Scrollbar
 # loading the environment variables
 from dotenv import load_dotenv
@@ -71,17 +73,21 @@ def guiCls(error_textbox):
     error_textbox.configure(state="disabled")
 
 
-"""
----------------------------------------------------- Open Browser ----------------------------------------------------
-"""
+################################ Open Browser ################################
+
+# chrome.exe --remote-debugging-port=9222
+#                           --user-data-dir="C:\selenum\ChromeScraperProfile"
+# --remote-debugging-port
+#                           the value you can specify any port that is open.
+# --user-data-dir
+#                           the flag you need to pass is a directory where a
+#                           new Chrome profile will be created
 
 
 def initChromeWindow():
-    # chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScraperProfile"
-    # ---> for --remote-debugging-port value you can specify any port that is open.
-    # ---> for --user-data-dir flag you need to pass a directory where a new Chrome profile will be created
-    if OsGetenv('DIR_CHROMEAPP_PATH') == None or OsGetenv('PORT') == None:
-        messagebox.showerror(".env Error", "[#1] .env file not found in the project root or empty, Please see the README.md file for solution")
+    if OsGetenv('DIR_CHROMEAPP_PATH') is None or OsGetenv('PORT') is None:
+        messagebox.showerror(
+            ".env Error", "[#1] .env file not found in the project root or empty, Please see the README.md file for solution")
         exit(1)
 
     try:
@@ -93,9 +99,7 @@ def initChromeWindow():
         messagebox.showerror("Chrome Error", "[#10]" + str(e))
 
 
-"""
----------------------------------------------------- Set Driver ----------------------------------------------------
-"""
+################################# Set Driver #################################
 
 
 def setDriver():
@@ -224,7 +228,8 @@ def setDriverToLast(driver):
     try:
         driver.switch_to.window(window_name=driver.window_handles[-1])
     except WebDriverException:
-        messagebox.showerror("Driver Error", "[#12] WebdriverException: No window found")
+        messagebox.showerror(
+            "Driver Error", "[#12] WebdriverException: No window found")
         exit(1)
     return driver
 
@@ -297,9 +302,11 @@ class App(Tk):
 
         self.driver = driver
         self.geometry("282x240")
-        try: self.iconbitmap(relativeToAssets("icon.ico")) 
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'icon.ico' not found in 'assets' folder")
+        try:
+            self.iconbitmap(relativeToAssets("icon.ico"))
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'icon.ico' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.title('Pinaack Webscraper')
@@ -361,9 +368,10 @@ class App(Tk):
             self.saving_button_image = PhotoImage(
                 file=relativeToAssets("saving_button.png"))
             self.save_button_image = PhotoImage(
-                file=relativeToAssets("save_button.png")) 
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'saving_button.png' or 'save_button.png' not found in 'assets' folder")
+                file=relativeToAssets("save_button.png"))
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'saving_button.png' or 'save_button.png' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.save_button = Button(
@@ -400,10 +408,12 @@ class App(Tk):
         setDataPath()
 
     def createPathSaveEntry(self):
-        try: self.save_as_entry_image = PhotoImage(
+        try:
+            self.save_as_entry_image = PhotoImage(
                 file=relativeToAssets("save_as_entry.png"))
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'save_as_entry.png' not found in 'assets' folder")
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'save_as_entry.png' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.save_as_bg = self.canvas.create_image(
@@ -422,10 +432,12 @@ class App(Tk):
             width=172.0,
             height=18.0
         )
-        try: self.save_in_button_image = PhotoImage(
+        try:
+            self.save_in_button_image = PhotoImage(
                 file=relativeToAssets("save_in_button.png"))
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'save_in_button.png' not found in 'assets' folder")
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'save_in_button.png' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.save_in_button = Button(
@@ -444,10 +456,12 @@ class App(Tk):
         )
 
     def createSeeButton(self):
-        try: self.see_button_image = PhotoImage(
+        try:
+            self.see_button_image = PhotoImage(
                 file=relativeToAssets("see_button.png"))
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'see_button.png' not found in 'assets' folder")
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'see_button.png' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.see_button = Button(
@@ -466,10 +480,12 @@ class App(Tk):
         )
 
     def createAddButton(self):
-        try: self.add_button_image = PhotoImage(
+        try:
+            self.add_button_image = PhotoImage(
                 file=relativeToAssets("add_button.png"))
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'add_button.png' not found in 'assets' folder")
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'add_button.png' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.add_button = Button(
@@ -511,10 +527,12 @@ class App(Tk):
             height=72.0
         )
         self.error_textbox['yscrollcommand'] = scrollbar.set
-        try: self.cls_button_image = PhotoImage(
+        try:
+            self.cls_button_image = PhotoImage(
                 file=relativeToAssets("cls_button.png"))
-        except TclError: 
-            messagebox.showerror("Missing Asset", "[#2] 'cls_button.png' not found in 'assets' folder")
+        except TclError:
+            messagebox.showerror(
+                "Missing Asset", "[#2] 'cls_button.png' not found in 'assets' folder")
             self.onClosing()
             exit(1)
         self.cls_button = Button(

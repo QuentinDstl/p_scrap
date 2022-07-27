@@ -303,7 +303,7 @@ Converting the .py to .exe
 You can use 
 [nuikta](https://nuitka.net/doc/user-manual.html) to do it by running the following command in your terminal :   
 ```bash
-python -m nuitka --standalone webscraper.py
+python -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md webscraper.py
 ```
 
 ------------------------------------------------------------
