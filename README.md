@@ -308,8 +308,3 @@ use pypy3
 use numpy for matrix and use jit on top of it
 
 http://sdz.tdct.org/sdz/creer-une-installation.html
-
-
-refacto :
-        rule -> page
-        saveAs -> rule
