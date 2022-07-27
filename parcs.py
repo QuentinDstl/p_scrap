@@ -80,6 +80,10 @@ def initChromeWindow():
     # chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\ChromeScraperProfile"
     # ---> for --remote-debugging-port value you can specify any port that is open.
     # ---> for --user-data-dir flag you need to pass a directory where a new Chrome profile will be created
+    if OsGetenv('DIR_CHROMEAPP_PATH') == None or OsGetenv('PORT') == None:
+        messagebox.showerror(".env Error", "[#1] .env file not found in the project root or empty, Please see the README.md file for solution")
+        exit()
+
     try:
         prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
                             (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)

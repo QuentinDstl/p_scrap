@@ -237,6 +237,7 @@ Critical Errors
 
 | Id | Description | Solution |
 |---|---|---|
+| `#1` | The `.env` file is empty, corrupt or does not exist in the project root folder | Download the `.env` file from the [git repository](https://github.com/QuentinDstl/p_scarp) and place it in the root file |
 | `#10` | Can't execute the terminal commands to set chrome.exe path or to open a chrome debugging instance | Try to launch it manually in your terminal by running [this command](#openning-chrome-debugging-instance) and see if it work |
 | `#11` | The selenium driver don't work | Download the [latest version of chromedriver](https://chromedriver.storage.googleapis.com/index.html) and replace the previous `chromedriver.exe` in the `driver` folder |
 
@@ -314,5 +315,4 @@ refacto :
         rule -> page
         saveAs -> rule
 
-no .env
 no assets
