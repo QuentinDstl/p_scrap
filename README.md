@@ -303,8 +303,12 @@ Converting the .py to .exe
 You can use 
 [nuikta](https://nuitka.net/doc/user-manual.html) to do it by running the following command in your terminal :   
 ```bash
-python -m nuitka --standalone webscraper.py
+py -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md --enable-plugin=tk-inter --enable-plugin=numpy --include-package-data=selenium webscraper.py
 ```
+
+https://jerrynsh.com/how-to-package-python-selenium-applications-with-pyinstaller/
+
+https://www.zacoding.com/en/post/python-selenium-to-exe/
 
 ------------------------------------------------------------
 
