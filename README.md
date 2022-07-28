@@ -13,8 +13,8 @@ __You may need to change manually some stuff in some of the following files:__
 .config file
 ------------
 
-| what is in `.config` |||
-|---|---|---|
+| what is in `.config`      |                                    |                                                |
+| ------------------------- | ---------------------------------- | ---------------------------------------------- |
 | `[SAVING] SAVE_DATA_PATH` | _C:/Folder/To/Save/the_result.csv_ | folder where the current website will be saved |
 
 > ⚠️ If `.config` doesn't exist, it will be created on next launch and you will be asked to choose it.
@@ -23,10 +23,10 @@ __You may need to change manually some stuff in some of the following files:__
 .env file
 ---------
 
-| what is in `.env` |||
-|---|---|---|
+| what is in `.env`    |                                               |                                                        |
+| -------------------- | --------------------------------------------- | ------------------------------------------------------ |
 | `DIR_CHROMEAPP_PATH` | _C:/Program Files/Google/Chrome/Application/_ | default folder used to launch Chrome on debugging mode |
-| `PORT` | _9222_ | default port used to launch the new chrome window |
+| `PORT`               | _9222_                                        | default port used to launch the new chrome window      |
 
 > ⚠️ The `PORT` must __not be used by another app__. Launch `cmd` with admin rights and execute : `netstat -a` to see what port are used.
 
@@ -87,9 +87,9 @@ You will find in the template a `"pages"` array that contains all the individual
 
 Each page has the following two information :
 
-| variable | type | description |
-|---|---|---|
-| `fileName` | _string_ | the default __name of the file__ that will be saved for this page of the website website |
+| variable      | type     | description                                                                                          |
+| ------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `fileName`    | _string_ | the default __name of the file__ that will be saved for this page of the website website             |
 | `urlSelector` | _string_ | the __string__ in the url __that will differentiate this page__ from the others for the same website |
 
 > 📖 For example, in the case of the page with the url :
@@ -112,11 +112,11 @@ A rule allows you to define how you will select one data information that you wa
 
 A rule has the following information :
 
-| variable | type | description |
-|---|---|---|
-| `htmlTag` | _string_ | a [html tag](#html-tags) that the selenium will search for |
-| `value` | _string_ | the value of the data that the html tag has |
-| `saveAs` | _string_ | the name of the column for this information in the CSV |
+| variable   | type     | description                                                       |
+| ---------- | -------- | ----------------------------------------------------------------- |
+| `htmlTag`  | _string_ | a [html tag](#html-tags) that the selenium will search for        |
+| `value`    | _string_ | the value of the data that the html tag has                       |
+| `saveAs`   | _string_ | the name of the column for this information in the CSV            |
 | `saveType` | _string_ | the [saving type](#saving-types) that will define the data format |
 
 
@@ -235,25 +235,25 @@ Critical Errors
 
 > 📖 Critical errors will appear in a popup error window and will shutdown the program.
 
-| Id | Description | Solution |
-|---|---|---|
-| `#1` | The `.env` file is empty, corrupt or does not exist in the project root folder | Download the `.env` file from the [git repository](https://github.com/QuentinDstl/p_scarp) and replace the old file with the new one in the root file |
-| `#2` | The mentioned file is missing in the `asset` folder | Download the `asset` folder from the [git repository](https://github.com/QuentinDstl/p_scarp) and replace the old folder with the new one in the root file |
-| `#10` | Can't execute the terminal commands to set chrome.exe path or to open a chrome debugging instance | Try to launch it manually in your terminal by running [this command](#openning-chrome-debugging-instance) and see if it work |
-| `#11` | The selenium driver don't work | Download the [latest version of chromedriver](https://chromedriver.storage.googleapis.com/index.html) and replace the previous `chromedriver.exe` in the `driver` folder |
+| Id    | Description                                                                                       | Solution                                                                                                                                                                 |
+| ----- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `#1`  | The `.env` file is empty, corrupt or does not exist in the project root folder                    | Download the `.env` file from the [git repository](https://github.com/QuentinDstl/p_scarp) and replace the old file with the new one in the root file                    |
+| `#2`  | The mentioned file is missing in the `asset` folder                                               | Download the `asset` folder from the [git repository](https://github.com/QuentinDstl/p_scarp) and replace the old folder with the new one in the root file               |
+| `#10` | Can't execute the terminal commands to set chrome.exe path or to open a chrome debugging instance | Try to launch it manually in your terminal by running [this command](#openning-chrome-debugging-instance) and see if it work                                             |
+| `#11` | The selenium driver don't work                                                                    | Download the [latest version of chromedriver](https://chromedriver.storage.googleapis.com/index.html) and replace the previous `chromedriver.exe` in the `driver` folder |
 
 Warnings
 --------
 
 > 📖 Warnings will appear in the application console.
 
-| Id | Description | Solution |
-|---|---|---|
-| `#20` | One of the [rules](#b-the-page-rules) is not working properly | Check the missing information in the `.csv` saved file and change the field `value` or `htmlTag` corresponding in the same template file |
-| `#21` | Name has special characters in it | The name given to the csv file have special characters please only use letters, numbers and `-` or `_` |
-| `#22` | Loading templates error | The templates is not founded  |
-| `#23` | Loading templates error | The templates is not founded  |
-| `#24` | The `htmlTag` in one of the rule of the template is not one of the [html tag](#html-tags) | Open the template file of the website you where trying to save and search for the corresponding tag-name that was prompt in console |
+| Id    | Description                                                                               | Solution                                                                                                                                 |
+| ----- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `#20` | One of the [rules](#b-the-page-rules) is not working properly                             | Check the missing information in the `.csv` saved file and change the field `value` or `htmlTag` corresponding in the same template file |
+| `#21` | Name has special characters in it                                                         | The name given to the csv file have special characters please only use letters, numbers and `-` or `_`                                   |
+| `#22` | Loading templates error                                                                   | The templates is not founded                                                                                                             |
+| `#23` | Loading templates error                                                                   | The templates is not founded                                                                                                             |
+| `#24` | The `htmlTag` in one of the rule of the template is not one of the [html tag](#html-tags) | Open the template file of the website you where trying to save and search for the corresponding tag-name that was prompt in console      |
 
 
 ------------------------------------------------------------
