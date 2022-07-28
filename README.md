@@ -6,6 +6,7 @@
 Installation
 ============
 
+You need to have __Chrome installed__ on your machine.
 You need to clone the repo at this [link](https://github.com/QuentinDstl/p_scarp) or download the zip file.
 
 __You may need to change manually some stuff in some of the following files:__
