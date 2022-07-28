@@ -303,7 +303,7 @@ Converting the .py to .exe
 You can use 
 [nuikta](https://nuitka.net/doc/user-manual.html) to do it by running the following command in your terminal :   
 ```bash
-py -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md --enable-plugin=tk-inter --enable-plugin=numpy --include-package-data=selenium --windows-icon-from-ico=./assets/icon.ico --windows-product-version=1.0.1.0 webscraper.py
+py -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md --enable-plugin=tk-inter --enable-plugin=numpy --include-package-data=selenium --windows-icon-from-ico=./assets/icon.ico webscraper.py
 ```
 
 https://jerrynsh.com/how-to-package-python-selenium-applications-with-pyinstaller/
@@ -314,13 +314,23 @@ https://www.zacoding.com/en/post/python-selenium-to-exe/
 
 <br>
 
-TODO for the V2
-===============
+TODO List
+=========
 
-Work on some Speed improvements
--------------------------------
+Logic Improvements
+------------------
+
+- Check if .config is auto generated if an error spawn
+- Add chrome profile path in the config file if not define a default one will be created and destroy onClose
+
+Speed Improvements
+------------------
 
 - use pypy3
 - use numpy for matrix and use jit on top of it
 
-http://sdz.tdct.org/sdz/creer-une-installation.html
+Installation Improvements
+-------------------------
+
+- Create an installation file for all the dependencies
+    `http://sdz.tdct.org/sdz/creer-une-installation.html`
