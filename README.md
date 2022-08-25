@@ -1,7 +1,24 @@
 <p align="center">
-  <img src="https://media-exp1.licdn.com/dms/image/C4E0BAQFJMuP43XCVKQ/company-logo_200_200/0/1620734759790?e=2147483647&v=beta&t=f6EcoAHEsKWQqcbJ6JMyPwGkhQgsKUfDxF9VVpA6ufo" width="100" />
-  <h1 align="center">Pinaack Webscraper</h1>
+  <img src="readme_content/pinaacksolutions.png" width="300"/>
 </p>
+
+Usage
+=====
+
+On first launch the chromeProfile file will be generated so it will take some time.
+When you launch the application the following popup will appear :
+
+<p align="center">
+<img src="readme_content/application.png" width="300"/>
+</p>
+
+> ⚠️ if files are missing or it is the first launch a particular window can open.
+
+1. By clicking on the big red button you will save the information from the page that has the same webpage name (the last one opened).
+2. For the name of the file, please enter a known extension (`.csv`, `.xlsx` or `xls`) or it will be saved by default as a `.csv`.
+3. If you want to change the saving path click on the grey "In `file-emote`" button.
+4. You can see the existing templates and add new ones with the following two buttons.
+5. The console will print warning and information messages.
 
 Installation
 ============
