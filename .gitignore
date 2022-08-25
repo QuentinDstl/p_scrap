@@ -4,6 +4,7 @@ driver/driverProfile
 templates/*
 !templates/example.json
 venv/
-parcs.build/
-parcs.cmd
+webscraper.cmd
 .config
+webscraper.build
+webscraper.dist
