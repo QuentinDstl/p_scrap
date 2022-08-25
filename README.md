@@ -259,6 +259,8 @@ Critical Errors
 | `#2`  | The mentioned file is missing in the `asset` folder                                               | Download the `asset` folder from the [git repository](https://github.com/QuentinDstl/p_scarp) and replace the old folder with the new one in the root file               |
 | `#10` | Can't execute the terminal commands to set chrome.exe path or to open a chrome debugging instance | Try to launch it manually in your terminal by running [this command](#openning-chrome-debugging-instance) and see if it work                                             |
 | `#11` | The selenium driver don't work                                                                    | Download the [latest version of chromedriver](https://chromedriver.storage.googleapis.com/index.html) and replace the previous `chromedriver.exe` in the `driver` folder |
+| `#12` | No window found to scrap | Please restart the scraper |
+| `#13` | All chrome pages related to the scrapper have been closed | Do not close the chrome pages of the scrapper if you want to continue using it |
 
 Warnings
 --------
@@ -267,11 +269,12 @@ Warnings
 
 | Id    | Description                                                                               | Solution                                                                                                                                 |
 | ----- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `#20` | One of the [rules](#b-the-page-rules) is not working properly                             | Check the missing information in the `.csv` saved file and change the field `value` or `htmlTag` corresponding in the same template file |
+| `#20` | One of the [rules](#b-the-page-rules) is not working properly                             | Check the `MISSING` text in the `.csv`/`.xlsx`/`.xls` saved file and change the field `value` or `htmlTag` corresponding in the same template file |
 | `#21` | Name has special characters in it                                                         | The name given to the csv file have special characters please only use letters, numbers and `-` or `_`                                   |
 | `#22` | Loading templates error                                                                   | The templates is not founded                                                                                                             |
 | `#23` | Loading templates error                                                                   | The templates is not founded                                                                                                             |
 | `#24` | The `htmlTag` in one of the rule of the template is not one of the [html tag](#html-tags) | Open the template file of the website you where trying to save and search for the corresponding tag-name that was prompt in console      |
+| `#25` | The save file don't have extension | Please add `.csv`, `.xlsx` or `.xls` at the end of the save file name |
 
 
 ------------------------------------------------------------
@@ -321,10 +324,10 @@ Converting the .py to .exe
 You can use 
 [nuikta](https://nuitka.net/doc/user-manual.html) to do it by running the following command in your terminal :   
 ```bash
-py -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md --enable-plugin=tk-inter --enable-plugin=numpy --include-package-data=selenium --windows-icon-from-ico=./assets/icon.ico webscraper.py
 py -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md --enable-plugin=tk-inter --enable-plugin=numpy --include-package-data=selenium --include-package-data=openpyxl --windows-icon-from-ico=./assets/app.ico webscraper.py
 ```
 
+> ⚠️ Make sure to not push the `driverProfile` because it's to heavy and it will be generated if missing 
 ------------------------------------------------------------
 
 <br>

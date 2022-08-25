@@ -4,12 +4,13 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 # CSV saver
-from pandas import DataFrame
+from pandas import DataFrame, ExcelWriter as PdExcelWriter
 # for charging the template
 from json import loads as JsonLoads
 # charge the templates and see templates files
 from os.path import (dirname as OsDirname, abspath as Osabspath,
-                     join as OsJoin, isfile as OsIsfile)
+                     join as OsJoin, isfile as OsIsfile,
+                     normpath as OsNormpath)
 from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
 from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
@@ -212,12 +213,32 @@ def getDataframe(driver, error_textbox, template):
     return elementsToDataframe(error_textbox, template, elements)
 
 
-def saveDataframe(error_textbox, dataframe, saving_path):
+def getSavingPath(saving_name):
+    split_saving_name = saving_name.split(".")
+    extension = split_saving_name.pop()
+    clean_name = slugify("".join(split_saving_name))
+    saving_path = OsJoin(SAVE_DATA_PATH, clean_name + "." + extension)
+    return OsNormpath(saving_path)
+
+
+def saveDataframe(error_textbox, dataframe, saving_name):
+    saving_path = getSavingPath(saving_name)
     try:
-        dataframe.to_csv(saving_path, index=False)
+        if(saving_name.split(".")[-1] == "xlsx" or saving_name.split(".")[-1] == "xls"):
+            try:
+                with PdExcelWriter(saving_path, mode="a", engine="openpyxl", if_sheet_exists="new") as writer:
+                    dataframe.to_excel(
+                        writer, sheet_name="Data", na_rep="MISSING")
+            except FileNotFoundError:
+                with PdExcelWriter(saving_path, mode="w", engine="openpyxl") as writer:
+                    dataframe.to_excel(
+                        writer, sheet_name="Data", na_rep="MISSING")
+        else:
+            dataframe.to_csv(saving_path, na_rep="MISSING",
+                             mode="a", index=False)
     except ImportError as e:
         guiPrint(error_textbox, "[#21] Name has special characters in it")
-    return saving_path
+    guiPrint(error_textbox, "Data saved at: " + saving_path)
 
 
 def relativeToAssets(filename):
@@ -271,13 +292,19 @@ def slugify(text):
     return sub(r"[-\s]+", '-', text).strip("-_")
 
 
+def haveExtension(filename):
+    filename_list = filename.rsplit(".")
+    return len(filename_list) > 1 and (filename_list[-1] == "csv"
+                                       or filename_list[-1] == "xlsx"
+                                       or filename_list[-1] == "xls")
+
 
 class AsyncScraper(Thread):
     def __init__(self, driver, error_textbox, saving_name):
         super().__init__()
         self.driver = driver
         self.error_textbox = error_textbox
-        self.saving_name = slugify(saving_name)
+        self.saving_name = saving_name
 
     def run(self):
         try:
@@ -288,13 +315,14 @@ class AsyncScraper(Thread):
             dataframe = getDataframe(driver, self.error_textbox, template)
             if(self.saving_name == ""):
                 self.saving_name = slugify(template["fileName"]) + self.driver.current_url.split(
-                    "/", 3)[3].replace("/", "%").replace("?", "@")
+                    "/", 3)[3].replace("/", "%").replace("?", "@") + ".csv"
             if(SAVE_DATA_PATH == ""):
                 setDataPath()
-
-            saving_path = OsJoin(SAVE_DATA_PATH,  self.saving_name + ".csv")
-            guiPrint(self.error_textbox, "Data saved at: " +
-                     saveDataframe(self.error_textbox, dataframe, saving_path))
+            if(haveExtension(self.saving_name) == False):
+                guiPrint(self.error_textbox,
+                         "[#25] Name of the save file don't have any extension")
+            else:
+                saveDataframe(self.error_textbox, dataframe, self.saving_name)
 
 
 class App(Tk):
@@ -565,11 +593,17 @@ class App(Tk):
             self.destroy()
 
     def parallelLoop(self):
-        if(self.buffer_windows_len != len(self.driver.window_handles)):
-            self.buffer_windows_len = len(self.driver.window_handles)
-            self.driver = setDriverToLast(self.driver)
-        self.save_info.configure(text=self.driver.title)
-        self.after(200, self.parallelLoop)
+        try:
+            if(self.buffer_windows_len != len(self.driver.window_handles)):
+                self.buffer_windows_len = len(self.driver.window_handles)
+                self.driver = setDriverToLast(self.driver)
+            self.save_info.configure(text=self.driver.title)
+        except WebDriverException:
+            messagebox.showinfo(
+                "Chrome Instance Closed", "[#13] All chrome pages related to the scrapper have been closed")
+            self.onClosing()
+        finally:
+            self.after(200, self.parallelLoop)
 
 
 if __name__ == "__main__":
