@@ -31,17 +31,17 @@ load_dotenv()
 ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 
 # templates folder path
-DIR_TEMPLATES_PATH = OsJoin(ROOT_DIR, 'templates\\')
+DIR_TEMPLATES_PATH = OsJoin(ROOT_DIR, "templates/")
 # directory of the user for the chrome driver
-DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, 'driver\\driverProfile\\')
+DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, "driver/driverProfile/")
 # path to have access to the chromedriver executable
-DRIVER_PATH = OsJoin(ROOT_DIR, 'driver\\chromedriver.exe')
+DRIVER_PATH = OsJoin(ROOT_DIR, "driver/chromedriver.exe")
 # path to assets folder for the GUI
-ASSETS_PATH = OsJoin(ROOT_DIR, 'assets\\')
+ASSETS_PATH = OsJoin(ROOT_DIR, "assets/")
 # path to open explorer.exe
-FILEBROWSER_PATH = OsJoin(OsGetenv('WINDIR'), 'explorer.exe')
+FILEBROWSER_PATH = OsJoin(OsGetenv("WINDIR"), "explorer.exe")
 
-CONFIG_PATH = OsJoin(ROOT_DIR, '.config')
+CONFIG_PATH = OsJoin(ROOT_DIR, ".config")
 
 
 def loadConfig():
@@ -85,14 +85,14 @@ def guiCls(error_textbox):
 
 
 def initChromeWindow():
-    if OsGetenv('DIR_CHROMEAPP_PATH') is None or OsGetenv('PORT') is None:
+    if OsGetenv("DIR_CHROMEAPP_PATH") is None or OsGetenv("PORT") is None:
         messagebox.showerror(
             ".env Error", "[#1] .env file not found in the project root or empty, Please see the README.md file for solution")
         exit(1)
 
     try:
-        prog_start = Popen(['cmd', '/c', 'set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s' %
-                            (OsGetenv('DIR_CHROMEAPP_PATH'), OsGetenv('PORT'), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
+        prog_start = Popen(["cmd", "/c", "set PATH=%%PATH%%;%s&&chrome.exe --remote-debugging-port=%s --user-data-dir=%s" %
+                            (OsGetenv("DIR_CHROMEAPP_PATH"), OsGetenv("PORT"), DIR_CHROMEPROFIL_PATH)], creationflags=CREATE_NEW_CONSOLE)
         sleep(1)
         prog_start.kill()
     except Exception as e:
@@ -309,7 +309,7 @@ class App(Tk):
                 "Missing Asset", "[#2] 'icon.ico' not found in 'assets' folder")
             self.onClosing()
             exit(1)
-        self.title('Pinaack Webscraper')
+        self.title("Pinaack Webscraper")
         self.configure(bg="#FFFEFC")
         self.resizable(False, False)
 
@@ -518,7 +518,7 @@ class App(Tk):
         )
         scrollbar = Scrollbar(
             self,
-            orient='vertical',
+            orient="vertical",
             command=self.error_textbox.yview
         )
         scrollbar.place(
@@ -526,7 +526,7 @@ class App(Tk):
             y=151.0,
             height=72.0
         )
-        self.error_textbox['yscrollcommand'] = scrollbar.set
+        self.error_textbox["yscrollcommand"] = scrollbar.set
         try:
             self.cls_button_image = PhotoImage(
                 file=relativeToAssets("cls_button.png"))
@@ -571,7 +571,7 @@ class App(Tk):
         self.after(200, self.parallelLoop)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     initConfig()
     initChromeWindow()
     driver = setDriver()
