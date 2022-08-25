@@ -266,9 +266,10 @@ def setDataPath():
 
 def slugify(text):
     text = str(text)
-    text = normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
-    text = sub(r'[^\w\s-]', '', text.lower())
-    return sub(r'[-\s]+', '-', text).strip('-_')
+    text = normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    text = sub(r"[^\w\s-]", "", text.lower())
+    return sub(r"[-\s]+", '-', text).strip("-_")
+
 
 
 class AsyncScraper(Thread):
