@@ -1,12 +1,12 @@
 {
     "pages": [
         {
-            "fileName": "Linkedin",
+            "fileName": "test",
             "urlSelector": "/about/",
             "rules": [
                 {
-                    "htmlTag": "xpath",
-                    "value": "/html/body/div[4]/div[3]/div/div[2]/div/div[2]/main/div[1]/section/div/div[2]/div[1]/div[1]/div[2]/div/h1/span",
+                    "htmlTag": "class",
+                    "value": "c_name_head",
                     "saveAs": "Company",
                     "saveType": "string"
                 },
