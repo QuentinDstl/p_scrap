@@ -232,8 +232,12 @@ def saveDataframe(error_textbox, dataframe, saving_name):
                     dataframe.to_excel(
                         writer, sheet_name="Data", na_rep="MISSING")
         else:
-            dataframe.to_csv(saving_path, na_rep="MISSING",
-                             mode="a", index=False)
+            if(OsIsfile(saving_path)):
+                dataframe.to_csv(saving_path, na_rep="MISSING",
+                                 header=False, mode="a", index=False)
+            else:
+                dataframe.to_csv(saving_path, na_rep="MISSING",
+                                 header=True, mode="a", index=False)
     except ImportError as e:
         guiPrint(error_textbox, "[#21] Name has special characters in it")
     guiPrint(error_textbox, "Data saved at: " + saving_path)
