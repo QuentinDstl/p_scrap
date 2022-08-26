@@ -13,7 +13,7 @@ from os.path import (dirname as OsDirname, abspath as Osabspath,
                      normpath as OsNormpath)
 from os import listdir as OsListdir, getenv as OsGetenv
 # execute command in a shell to open a browser
-from subprocess import Popen, CREATE_NEW_CONSOLE, run as Subrun
+from subprocess import Popen, CREATE_NEW_CONSOLE
 # using tkinter to create the gui of the project
 from tkinter import (TclError, Tk, Canvas, Text, Label, Button, PhotoImage,
                      messagebox, Entry, filedialog, END)
@@ -32,15 +32,13 @@ load_dotenv()
 ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 
 # templates folder path
-DIR_TEMPLATES_PATH = OsJoin(ROOT_DIR, "templates/")
+DIR_TEMPLATES_PATH = OsJoin(ROOT_DIR, "templates\\")
 # directory of the user for the chrome driver
-DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, "driver/driverProfile/")
+DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, "driver\\driverProfile\\")
 # path to have access to the chromedriver executable
-DRIVER_PATH = OsJoin(ROOT_DIR, "driver/chromedriver.exe")
+DRIVER_PATH = OsJoin(ROOT_DIR, "driver\\chromedriver.exe")
 # path to assets folder for the GUI
-ASSETS_PATH = OsJoin(ROOT_DIR, "assets/")
-# path to open explorer.exe
-FILEBROWSER_PATH = OsJoin(OsGetenv("WINDIR"), "explorer.exe")
+ASSETS_PATH = OsJoin(ROOT_DIR, "assets\\")
 
 CONFIG_PATH = OsJoin(ROOT_DIR, ".config")
 
@@ -256,7 +254,7 @@ def setDriverToLast(driver):
 
 
 def openTemplatesFolder():
-    Subrun([FILEBROWSER_PATH, DIR_TEMPLATES_PATH])
+    Popen('explorer "%s"' % DIR_TEMPLATES_PATH)
 
 
 def toggleButtonSaving(button, saving, saving_image, base_image):
