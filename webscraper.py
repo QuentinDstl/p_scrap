@@ -316,10 +316,11 @@ class AsyncScraper(Thread):
                     "/", 3)[3].replace("/", "%").replace("?", "@") + ".csv"
             if(SAVE_DATA_PATH == ""):
                 setDataPath()
-            if(haveExtension(self.saving_name) == False):
-                guiPrint(self.error_textbox,
-                         "[#25] Name of the save file don't have any extension")
             else:
+                if(haveExtension(self.saving_name) == False):
+                    guiPrint(self.error_textbox,
+                             "[#25] File name don't have any extension, default is '.csv'.")
+                    self.saving_name = self.saving_name + ".csv"
                 saveDataframe(self.error_textbox, dataframe, self.saving_name)
 
 
