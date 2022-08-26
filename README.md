@@ -327,7 +327,7 @@ You can use
 py -m nuitka --standalone --include-data-dir=./assets=assets --include-data-dir=./driver=driver --include-data-dir=./templates=templates --include-data-files=.config=.config --include-data-files=.env=.env --include-data-files=README.md=README.md --enable-plugin=tk-inter --enable-plugin=numpy --include-package-data=selenium --include-package-data=openpyxl --windows-icon-from-ico=./assets/app.ico webscraper.py
 ```
 
-> ⚠️ Make sure to not push the `driverProfile` because it's to heavy and it will be generated if missing 
+> ⚠️ Make sure to not push the `driverProfile` and the `.config` they will be generated if missing 
 ------------------------------------------------------------
 
 <br>
