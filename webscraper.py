@@ -35,8 +35,6 @@ ROOT_DIR = OsDirname(Osabspath(__file__))  # Project Root
 DIR_TEMPLATES_PATH = OsJoin(ROOT_DIR, "templates\\")
 # directory of the user for the chrome driver
 DIR_CHROMEPROFIL_PATH = OsJoin(ROOT_DIR, "driver\\driverProfile\\")
-# path to have access to the chromedriver executable
-DRIVER_PATH = OsJoin(ROOT_DIR, "driver\\chromedriver.exe")
 # path to assets folder for the GUI
 ASSETS_PATH = OsJoin(ROOT_DIR, "assets\\")
 
@@ -108,7 +106,7 @@ def setDriver():
     options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
     try:
         driver = webdriver.Chrome(
-            options=options, service=Service(DRIVER_PATH))
+            options=options, service=Service())
     except WebDriverException as e:
         messagebox.showerror("Driver Error", "[#11]" + str(e))
         messagebox.showinfo(
